@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaS Benchmark Explorer — Sourced from Lenny's Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE6;
+    --border: #E2DDD6;
+    --text: #1A1814;
+    --text-muted: #7A756C;
+    --text-faint: #B0AB9F;
+    --good: #1B5E4F;
+    --good-light: #E8F5F1;
+    --great: #1A3A5C;
+    --great-light: #E8F0F8;
+    --accent: #C85A2E;
+    --accent-light: #FAF0EB;
+    --tag-bg: #EDEAE3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .5rem;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: .75rem;
+  }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-pill {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--tag-bg);
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .meta-pill span { color: var(--text); font-weight: 500; }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .filters {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: 1.75rem;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .filter-group label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  select {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%237A756C' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    transition: border-color .15s;
+  }
+
+  select:hover { border-color: #C0BAB0; }
+  select:focus { outline: none; border-color: var(--accent); }
+
+  .results-count {
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-bottom: 1rem;
+    padding-left: 2px;
+  }
+
+  .results-count span { color: var(--text-muted); font-weight: 500; }
+
+  .legend {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    padding-left: 2px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .legend-swatch {
+    width: 28px;
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+    margin-bottom: 2.5rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.375rem;
+    transition: box-shadow .2s, border-color .2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    border-color: #CCC7BD;
+  }
+
+  .card-cat {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .card-metric {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .bars { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 7px; }
+
+  .bar-row { display: flex; align-items: center; gap: 10px; }
+
+  .bar-label {
+    font-size: 11px;
+    font-weight: 500;
+    width: 34px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 7px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+
+  .bar-fill.good { background: var(--good); }
+  .bar-fill.great { background: var(--great); }
+
+  .bar-value {
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 56px;
+    text-align: right;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+
+  .bar-value.good-val { color: var(--good); }
+  .bar-value.great-val { color: var(--great); }
+
+  .card-nuance {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    padding-top: .875rem;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: .6rem;
+  }
+
+  .source-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .source-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .source-text {
+    font-size: 10.5px;
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  .no-results {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-size: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: var(--text-faint);
+    line-height: 1.7;
+  }
+
+  .footer-text strong { color: var(--text-muted); font-weight: 500; }
+
+  .footer-by {
+    font-size: 12px;
+    color: var(--text-faint);
+    text-align: right;
+  }
+
+  .footer-by strong { color: var(--text-muted); font-weight: 500; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.6rem; }
+    .grid { grid-template-columns: 1fr; }
+    .filters { flex-direction: column; }
+    footer { flex-direction: column; align-items: flex-start; }
+    .footer-by { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div style="background: var(--surface); border-bottom: 1px solid var(--border);">
+  <header>
+    <div class="header-eyebrow">Sourced from Lenny's Archive · 2019–2026</div>
+    <h1>SaaS Benchmark Explorer</h1>
+    <p class="header-sub">Is this number good? Answer that question instantly — with benchmarks from Lenny's newsletter archive, sourced from 1,500+ data points and 30+ named growth experts.</p>
+    <div class="header-meta">
+      <div class="meta-pill">22 benchmarks across <span>7 metric categories</span></div>
+      <div class="meta-pill">Covers <span>5 business models</span></div>
+      <div class="meta-pill">Sourced from <span>Lenny's research</span></div>
+    </div>
+  </header>
+</div>
+
+<div class="container">
+
+  <div class="filters">
+    <div class="filter-group">
+      <label>Metric category</label>
+      <select id="cat">
+        <option value="all">All metrics</option>
+        <option value="retention">User retention</option>
+        <option value="nrr">Net revenue retention</option>
+        <option value="churn">Monthly churn</option>
+        <option value="conversion">Free-to-paid conversion</option>
+        <option value="payback">CAC payback period</option>
+        <option value="activation">Activation rate</option>
+        <option value="growth">Annual growth rate</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Business model</label>
+      <select id="model">
+        <option value="all">All models</option>
+        <option value="b2c">B2C / Consumer</option>
+        <option value="b2b-smb">B2B SMB / Mid-market</option>
+        <option value="b2b-ent">B2B Enterprise</option>
+        <option value="plg">PLG / Bottom-up SaaS</option>
+        <option value="marketplace">Marketplace</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:var(--good)"></div>
+      Good threshold
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:var(--great)"></div>
+      Great threshold
+    </div>
+  </div>
+
+  <div class="results-count" id="count"></div>
+  <div class="grid" id="grid"></div>
+
+</div>
+
+<footer>
+  <div class="footer-text">
+    All benchmarks sourced from <strong>Lenny's Newsletter archive</strong>.<br>
+    Primary research: What is good retention · What is good churn · Free-to-paid conversion · Payback period · Activation rate · Growth rate.
+  </div>
+  <div class="footer-by">
+    Built by <strong>Pramod Kumar</strong>
+  </div>
+</footer>
+
+<script>
+const DATA = [
+  {cat:'retention',model:'b2c',title:'6-month user retention',metric:'Consumer social',good:25,great:45,unit:'%',max:100,nuance:'Facebook 60–70%, Instagram 50–60%, Twitter 22% at 24 months. Social products can survive lower retention when CAC is near-zero.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'retention',model:'b2c',title:'6-month user retention',metric:'Consumer transactional',good:30,great:50,unit:'%',max:100,nuance:'TurboTax hits 77% 12-month; Lyft at 22%. Denominator = users who made at least one transaction.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'retention',model:'b2c',title:'6-month user retention',metric:'Consumer SaaS',good:40,great:70,unit:'%',max:100,nuance:'Amazon Prime 93%, Spotify 72%, Netflix 66%, Hulu 53%. Prime is the gold standard. Denominator = paid subscribers.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'retention',model:'b2b-smb',title:'6-month user retention',metric:'SMB / mid-market SaaS',good:60,great:80,unit:'%',max:100,nuance:'Atlassian 98%, Slack 90–95%, QuickBooks 79%. Measure at company level, not individual user level.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'retention',model:'b2b-ent',title:'6-month user retention',metric:'Enterprise SaaS',good:75,great:90,unit:'%',max:100,nuance:'Workday 95%, Salesforce 90%, ADP 90%+. High switching cost drives structural retention. Below 70% is a serious signal.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'nrr',model:'b2c',title:'12-month net revenue retention',metric:'Consumer SaaS NRR',good:55,great:80,unit:'%',max:150,nuance:'NRR below 100% means revenue base shrinks without new customers. Consumer NRR almost always sub-100 due to voluntary churn.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'nrr',model:'plg',title:'12-month net revenue retention',metric:'PLG / bottom-up SaaS',good:100,great:120,unit:'%',max:160,nuance:'Twilio 140–170%, Zoom 140%, Slack 135–155%. NRR >100% means revenue grows even with zero new customers.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'nrr',model:'b2b-smb',title:'12-month net revenue retention',metric:'Land & expand SMB',good:90,great:110,unit:'%',max:160,nuance:'Atlassian 100–148%, Box 130%, Zendesk 123%. Expansion revenue from upsells must offset logo churn.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'nrr',model:'b2b-ent',title:'12-month net revenue retention',metric:'Enterprise SaaS NRR',good:110,great:130,unit:'%',max:160,nuance:'Alteryx 135%, Fastly 130%, Okta 124%. Top-quartile enterprise consistently exceeds 130% through upsell and expansion.',source:'Lenny + 20 growth experts, 2020'},
+  {cat:'churn',model:'b2c',title:'Monthly churn rate',metric:'B2C SaaS',good:5,great:2,unit:'%',max:15,isInverse:true,nuance:'At 8% monthly you lose 65% of users per year. Data across 13,000+ SaaS companies: B2C variance is tighter than B2B across price points.',source:'Lenny\'s research, 2022'},
+  {cat:'churn',model:'b2b-smb',title:'Monthly churn rate',metric:'B2B SMB / mid-market',good:4,great:1.5,unit:'%',max:12,isInverse:true,nuance:'Highly price-dependent: at $5K+/month ACV, acceptable churn drops below 0.35%. High CAC businesses cannot absorb high churn.',source:'Lenny\'s research, 2022'},
+  {cat:'churn',model:'b2b-ent',title:'Monthly churn rate',metric:'B2B Enterprise',good:1.5,great:0.5,unit:'%',max:6,isInverse:true,nuance:'Enterprise churns slowly due to switching cost and multi-year contracts. Below 0.5% monthly is exceptional. Monitor involuntary churn carefully.',source:'Lenny\'s research, 2022'},
+  {cat:'conversion',model:'plg',title:'Free-to-paid conversion (6 months)',metric:'Freemium self-serve',good:5,great:8,unit:'%',max:25,nuance:'Canva, Trello, Typeform benchmarks. 20% of products see below 2.5%. Only 15% exceed 20%. Most common bucket is 2.5–5%.',source:'Lenny\'s research, 1,000+ products, 2023'},
+  {cat:'conversion',model:'b2b-smb',title:'Free-to-paid conversion (6 months)',metric:'Freemium + sales-assist',good:6,great:12,unit:'%',max:25,nuance:'Airtable, GitLab, HubSpot model. Sales involvement roughly doubles conversion vs pure self-serve.',source:'Lenny\'s research, 1,000+ products, 2023'},
+  {cat:'conversion',model:'b2b-smb',title:'Free-to-paid conversion (6 months)',metric:'Free trial products',good:10,great:20,unit:'%',max:35,nuance:'Shopify, Google Workspace, Intercom. 44% of free-trial companies have sales reach out to 50%+ of sign-ups — double the freemium rate.',source:'Lenny\'s research, 1,000+ products, 2023'},
+  {cat:'payback',model:'b2c',title:'CAC payback period',metric:'B2C businesses',good:6,great:1,unit:'mo',max:24,isInverse:true,nuance:'Exceptional B2C products recover CAC on the first transaction. Over 12 months at early stage makes growth math very difficult.',source:'Lenny + 20 growth experts, 2021'},
+  {cat:'payback',model:'b2b-smb',title:'CAC payback period',metric:'B2B SMB',good:12,great:6,unit:'mo',max:36,isInverse:true,nuance:'Best case: customer prepays and you recover all CAC upfront. Over 18 months at early stage is a red flag without strong LTV data.',source:'Lenny + 20 growth experts, 2021'},
+  {cat:'payback',model:'b2b-ent',title:'CAC payback period',metric:'B2B Enterprise',good:18,great:12,unit:'mo',max:48,isInverse:true,nuance:'24 months is OK for large enterprises with high LTV confidence and big balance sheets. Always calculate on gross profit, not revenue.',source:'Lenny + 20 growth experts, 2021'},
+  {cat:'activation',model:'all',title:'Activation rate',metric:'Overall SaaS average',good:34,great:50,unit:'%',max:100,nuance:'Survey of 500+ products. Median 25%. SaaS-only: average 36%, median 30%. Varies significantly by product type and market.',source:'Lenny\'s research, 500+ products, 2022'},
+  {cat:'growth',model:'b2b-smb',title:'Annual revenue growth rate',metric:'Series A (~$1–5M ARR)',good:150,great:200,unit:'%',max:300,nuance:'T2D3 rule: triple twice, double thrice. Series A investors expect 150%+ YoY. Retention quality matters as much as growth rate.',source:'Lenny\'s research, 2022'},
+  {cat:'growth',model:'b2b-smb',title:'Annual revenue growth rate',metric:'Series B (~$5–10M ARR)',good:100,great:150,unit:'%',max:250,nuance:'Minimum viable growth at Series B is ~3x. Best-in-class still triples. NRR starts to become as important as new logo growth.',source:'Lenny\'s research, 2022'},
+  {cat:'growth',model:'b2b-ent',title:'Annual revenue growth rate',metric:'Series C+ (~$10M+ ARR)',good:60,great:100,unit:'%',max:200,nuance:'Doubling at $10M+ ARR is strong. Top quartile approaches 2x or better. Net new ARR + NRR drives compounding at scale.',source:'Lenny\'s research, 2022'},
+];
+
+const CAT_LABELS = {
+  retention:'User Retention', nrr:'Net Revenue Retention',
+  churn:'Monthly Churn', conversion:'Conversion',
+  payback:'CAC Payback', activation:'Activation', growth:'Growth Rate'
+};
+
+function barPct(val, max, isInverse) {
+  const pct = Math.min(100, Math.round((val / max) * 100));
+  return isInverse ? Math.max(5, 100 - pct) : pct;
+}
+
+function fmt(val, unit, isInverse) {
+  if (unit === 'mo') return isInverse ? `≤${val} mo` : `${val} mo`;
+  return isInverse ? `≤${val}%` : `≥${val}%`;
+}
+
+function render() {
+  const cat = document.getElementById('cat').value;
+  const model = document.getElementById('model').value;
+  let items = DATA;
+  if (cat !== 'all') items = items.filter(d => d.cat === cat);
+  if (model !== 'all') items = items.filter(d => d.model === model || d.model === 'all');
+
+  document.getElementById('count').innerHTML = `Showing <span>${items.length}</span> benchmark${items.length !== 1 ? 's' : ''}`;
+
+  if (!items.length) {
+    document.getElementById('grid').innerHTML = '<div class="no-results">No benchmarks match this filter combination. Try broadening your selection.</div>';
+    return;
+  }
+
+  document.getElementById('grid').innerHTML = items.map(d => `
+    <div class="card">
+      <div class="card-cat">${CAT_LABELS[d.cat] || d.cat}</div>
+      <div class="card-title">${d.title}</div>
+      <div class="card-metric">${d.metric}</div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-label">Good</span>
+          <div class="bar-track"><div class="bar-fill good" style="width:${barPct(d.good, d.max, d.isInverse)}%"></div></div>
+          <span class="bar-value good-val">${fmt(d.good, d.unit, d.isInverse)}</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Great</span>
+          <div class="bar-track"><div class="bar-fill great" style="width:${barPct(d.great, d.max, d.isInverse)}%"></div></div>
+          <span class="bar-value great-val">${fmt(d.great, d.unit, d.isInverse)}</span>
+        </div>
+      </div>
+      <div class="card-nuance">
+        <div>${d.nuance}</div>
+        <div class="source-row">
+          <div class="source-dot"></div>
+          <span class="source-text">${d.source}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('cat').addEventListener('change', render);
+document.getElementById('model').addEventListener('change', render);
+render();
+</script>
+</body>
+</html>
