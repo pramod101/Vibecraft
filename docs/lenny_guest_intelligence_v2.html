@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lenny Guest Intelligence — Pramod Kumar's Strategy Research Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Cabinet+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:   #080d1a;
+  --navy2:  #0e1525;
+  --navy3:  #162035;
+  --navy4:  #1e2d47;
+  --navy5:  #243354;
+  --gold:   #c8a84b;
+  --gold2:  #e2c06a;
+  --gold3:  #f0d98a;
+  --golddim:#7a6228;
+  --cream:  #f2eddf;
+  --text:   #ddd8cc;
+  --text2:  #8e9aaf;
+  --text3:  #4e5a6e;
+  --text4:  #2e3848;
+  --green:  #3aaf7a;
+  --blue:   #4a9eff;
+  --red:    #e05a5a;
+  --border: rgba(200,168,75,0.14);
+  --border2:rgba(200,168,75,0.07);
+  --borderf:rgba(200,168,75,0.35);
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.25);
+  --card-shadow-hover: 0 4px 12px rgba(0,0,0,0.5), 0 16px 40px rgba(0,0,0,0.35);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'Cabinet Grotesk', 'Syne', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* AMBIENT BACKGROUND */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 900px 600px at -5% -10%, rgba(200,168,75,0.055) 0%, transparent 55%),
+    radial-gradient(ellipse 700px 500px at 105% 110%, rgba(74,158,255,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 500px 400px at 50% 50%, rgba(200,168,75,0.018) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ─── HEADER ─────────────────────────────────────────── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,13,26,0.96);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+}
+.header-inner {
+  max-width: 1440px; margin: 0 auto;
+  display: flex; align-items: center; height: 64px; gap: 28px;
+}
+.logo {
+  display: flex; align-items: center; gap: 11px;
+  text-decoration: none; flex-shrink: 0;
+}
+.logo-mark {
+  width: 32px; height: 32px;
+  border: 1.5px solid var(--gold);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 14px; color: var(--gold);
+  letter-spacing: -0.5px;
+  box-shadow: 0 0 12px rgba(200,168,75,0.15), inset 0 1px 0 rgba(200,168,75,0.1);
+}
+.logo-text {
+  font-size: 11px; font-weight: 700; color: var(--text3);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.logo-sep { color: var(--text4); margin: 0 3px; }
+.logo-sub { font-size: 13px; font-weight: 700; color: var(--gold2); letter-spacing: 0.01em; }
+
+.header-search { flex: 1; max-width: 440px; position: relative; }
+.search-icon {
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3); pointer-events: none;
+  display: flex; align-items: center;
+}
+.header-search input {
+  width: 100%;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 9px 16px 9px 42px;
+  color: var(--text);
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 14px; outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.header-search input:focus {
+  border-color: var(--borderf);
+  background: rgba(255,255,255,0.055);
+  box-shadow: 0 0 0 3px rgba(200,168,75,0.08);
+}
+.header-search input::placeholder { color: var(--text3); }
+.kbd-hint {
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px; color: var(--text3);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px; padding: 1px 5px;
+  pointer-events: none; letter-spacing: 0.05em;
+  font-family: 'DM Mono', monospace;
+}
+
+.header-stats { display: flex; gap: 6px; flex-shrink: 0; }
+.hstat {
+  text-align: center;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 6px 14px;
+}
+.hstat-val { font-size: 17px; font-weight: 700; color: var(--gold2); font-family: 'DM Mono', monospace; line-height: 1.2; }
+.hstat-lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 1px; }
+
+/* ─── HERO ─────────────────────────────────────────── */
+.hero {
+  max-width: 1440px; margin: 0 auto;
+  padding: 48px 40px 36px;
+  position: relative; z-index: 1;
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+}
+.hero-left {}
+.hero-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block; width: 24px; height: 1.5px;
+  background: var(--gold); border-radius: 1px;
+}
+.hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.hero-title em { font-style: italic; color: var(--gold2); }
+.hero-sub {
+  font-size: 14px; color: var(--text2); line-height: 1.65;
+  max-width: 480px;
+}
+.hero-right {
+  display: flex; gap: 12px; flex-shrink: 0;
+}
+.hero-stat {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 20px;
+  text-align: center;
+  min-width: 90px;
+}
+.hero-stat-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 28px; font-weight: 500;
+  color: var(--gold2); line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-stat-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* ─── MAIN ─────────────────────────────────────────── */
+.main { max-width: 1440px; margin: 0 auto; padding: 28px 40px 60px; position: relative; z-index: 1; }
+
+/* ─── CONTROLS ─────────────────────────────────────── */
+.controls {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.view-tabs {
+  display: flex; gap: 2px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border2);
+  border-radius: 10px; padding: 3px;
+  flex-shrink: 0;
+}
+.vtab {
+  padding: 7px 18px; border-radius: 8px;
+  font-size: 13px; font-weight: 600;
+  color: var(--text3); cursor: pointer;
+  background: transparent; border: none;
+  transition: all 0.18s; letter-spacing: 0.01em;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+.vtab.active { background: rgba(200,168,75,0.14); color: var(--gold2); }
+.vtab:hover:not(.active) { color: var(--text2); background: rgba(255,255,255,0.03); }
+
+.filter-scroll { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; flex: 1; }
+.ftag {
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.07);
+  color: var(--text3); cursor: pointer;
+  background: rgba(255,255,255,0.025);
+  transition: all 0.15s; letter-spacing: 0.02em;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+.ftag:hover { border-color: rgba(200,168,75,0.25); color: var(--text2); background: rgba(255,255,255,0.045); }
+.ftag.active { border-color: var(--gold); color: var(--gold2); background: rgba(200,168,75,0.1); }
+
+/* SORT BAR */
+.sort-bar {
+  display: flex; gap: 6px; align-items: center;
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border2);
+}
+.sort-label { font-size: 11px; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; }
+.sort-btn {
+  padding: 4px 11px; border-radius: 6px;
+  font-size: 12px; font-weight: 600;
+  border: 1px solid var(--border2); color: var(--text3);
+  cursor: pointer; background: transparent;
+  transition: all 0.12s;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+.sort-btn.active { border-color: rgba(255,255,255,0.12); color: var(--text2); background: rgba(255,255,255,0.05); }
+.sort-btn:hover:not(.active) { color: var(--text2); }
+.result-count { margin-left: auto; font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+/* ─── GUEST GRID ────────────────────────────────────── */
+.guest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.guest-card {
+  background: var(--navy2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.22s, transform 0.18s, box-shadow 0.22s;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  box-shadow: var(--card-shadow);
+}
+
+/* left accent bar — hidden until hover */
+.guest-card::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 16px; bottom: 16px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 0.2s, top 0.2s, bottom 0.2s;
+}
+.guest-card:hover { border-color: rgba(200,168,75,0.28); transform: translateY(-3px); box-shadow: var(--card-shadow-hover); }
+.guest-card:hover::after { opacity: 1; top: 12px; bottom: 12px; }
+
+.card-body { padding: 20px 20px 0; }
+.card-top { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 14px; }
+
+.avatar {
+  width: 44px; height: 44px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700;
+  flex-shrink: 0;
+  font-family: 'DM Serif Display', serif;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+.avatar::after {
+  content: '';
+  position: absolute; inset: -1px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  pointer-events: none;
+}
+
+.card-meta { flex: 1; min-width: 0; }
+.card-name {
+  font-size: 15px; font-weight: 700; color: var(--cream);
+  line-height: 1.25; margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+.card-role { font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+.card-company { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+
+/* score badge top-right */
+.score-badge {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: 9px;
+  border: 1px solid;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; font-weight: 500;
+  line-height: 1;
+}
+.score-badge span { font-size: 9px; opacity: 0.7; margin-top: 2px; letter-spacing: 0.04em; font-family: 'Cabinet Grotesk', sans-serif; font-weight: 600; }
+
+.card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 11px; }
+.ctag {
+  padding: 3px 8px; border-radius: 5px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.card-desc {
+  font-size: 12.5px; color: var(--text3); line-height: 1.58;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  margin-bottom: 0;
+}
+
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 14px; padding: 11px 20px;
+  border-top: 1px solid var(--border2);
+  background: rgba(255,255,255,0.012);
+}
+.card-year { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+
+.card-link {
+  font-size: 11px; color: var(--gold); font-weight: 700;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 5px;
+  transition: color 0.15s, gap 0.15s;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.card-link:hover { color: var(--gold2); gap: 7px; }
+
+/* ─── CLUSTERS ──────────────────────────────────────── */
+.clusters-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .clusters-grid { grid-template-columns: 1fr; } }
+
+.cluster-card {
+  background: var(--navy2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  overflow: hidden;
+  animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  box-shadow: var(--card-shadow);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.cluster-card:hover { border-color: var(--border); box-shadow: var(--card-shadow-hover); }
+
+.cluster-header {
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid var(--border2);
+}
+.cluster-header-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+.cluster-icon {
+  width: 44px; height: 44px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.cluster-title { font-size: 17px; font-weight: 700; color: var(--cream); margin-bottom: 4px; letter-spacing: -0.01em; }
+.cluster-sub { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+.cluster-count-row { display: flex; align-items: baseline; gap: 6px; }
+.cluster-count { font-size: 36px; font-weight: 700; font-family: 'DM Mono', monospace; line-height: 1; }
+.cluster-count-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; }
+
+.cluster-body { padding: 16px 24px 22px; }
+.cluster-why {
+  font-size: 12.5px; color: var(--text2); line-height: 1.65;
+  margin-bottom: 16px; padding: 12px 14px;
+  background: rgba(255,255,255,0.025);
+  border-left: 2.5px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+}
+.cluster-guests { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.cgname {
+  padding: 5px 11px; border-radius: 7px;
+  font-size: 12px; font-weight: 600;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border2);
+  color: var(--text2); cursor: pointer;
+  transition: all 0.14s;
+}
+.cgname:hover { border-color: rgba(200,168,75,0.3); color: var(--cream); background: rgba(200,168,75,0.07); }
+
+.cluster-action {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 9px;
+  font-size: 12px; font-weight: 700;
+  border: 1px solid rgba(200,168,75,0.28);
+  color: var(--gold); background: rgba(200,168,75,0.07);
+  cursor: pointer; transition: all 0.15s;
+  text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+.cluster-action:hover { background: rgba(200,168,75,0.14); border-color: rgba(200,168,75,0.5); color: var(--gold2); }
+
+/* ─── TABLE ─────────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--border2); border-radius: 14px; box-shadow: var(--card-shadow); }
+table { width: 100%; border-collapse: collapse; min-width: 720px; }
+thead th {
+  padding: 12px 16px; text-align: left;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--text3); border-bottom: 1px solid var(--border2);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer; user-select: none; white-space: nowrap;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+thead th:hover { color: var(--text2); }
+thead th.sorted { color: var(--gold); }
+tbody tr { border-bottom: 1px solid var(--border2); transition: background 0.1s; cursor: pointer; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.028); }
+tbody td { padding: 12px 16px; font-size: 13px; vertical-align: middle; }
+.td-name { font-weight: 700; color: var(--cream); letter-spacing: -0.01em; }
+.td-role { color: var(--text2); font-size: 12px; }
+.td-company { color: var(--text3); font-size: 12px; }
+.td-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.td-year { font-family: 'DM Mono', monospace; color: var(--text3); font-size: 12px; }
+.td-rel { display: flex; align-items: center; gap: 7px; }
+.td-rel-bar { width: 54px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+.td-rel-fill { height: 4px; border-radius: 2px; }
+.td-rel-val { font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 500; }
+.td-link { color: var(--gold); text-decoration: none; font-size: 12px; font-weight: 700; white-space: nowrap; letter-spacing: 0.03em; transition: color 0.12s; }
+.td-link:hover { color: var(--gold2); }
+
+/* ─── MODAL ─────────────────────────────────────────── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(4,8,18,0.88);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  z-index: 200; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--navy2);
+  border: 1px solid rgba(200,168,75,0.22);
+  border-radius: 18px; width: 100%; max-width: 640px;
+  max-height: 88vh; overflow-y: auto;
+  animation: modalIn 0.28s cubic-bezier(0.22,1,0.36,1);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* modal top banner */
+.modal-banner {
+  height: 6px;
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(90deg, var(--golddim), var(--gold), var(--gold2), var(--golddim));
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer { 0%,100% { background-position: 0% 0%; } 50% { background-position: 100% 0%; } }
+
+.modal-header {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: flex-start; gap: 15px;
+}
+.modal-avatar {
+  width: 56px; height: 56px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 700; flex-shrink: 0;
+  font-family: 'DM Serif Display', serif;
+  position: relative;
+}
+.modal-avatar::after {
+  content: '';
+  position: absolute; inset: -1px; border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.1); pointer-events: none;
+}
+.modal-name {
+  font-size: 22px; font-weight: 400; color: var(--cream);
+  font-family: 'DM Serif Display', serif;
+  margin-bottom: 4px; line-height: 1.2; letter-spacing: -0.02em;
+}
+.modal-role { font-size: 13px; color: var(--text2); margin-bottom: 3px; line-height: 1.4; }
+.modal-company { font-size: 13px; color: var(--gold); font-weight: 600; }
+.modal-close {
+  margin-left: auto; padding: 7px 9px;
+  border-radius: 8px; border: 1px solid var(--border2);
+  color: var(--text3); cursor: pointer;
+  background: transparent; font-size: 15px;
+  transition: all 0.12s; flex-shrink: 0; line-height: 1;
+}
+.modal-close:hover { border-color: var(--border); color: var(--text2); background: rgba(255,255,255,0.04); }
+
+.modal-body { padding: 22px 24px 26px; }
+.modal-section { margin-bottom: 22px; }
+.modal-sec-title {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--golddim); margin-bottom: 9px;
+  display: flex; align-items: center; gap: 6px;
+}
+.modal-sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+.modal-desc { font-size: 13.5px; color: var(--text2); line-height: 1.72; }
+.modal-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+
+/* relevance meter */
+.modal-relevance {
+  background: linear-gradient(135deg, rgba(200,168,75,0.07), rgba(200,168,75,0.03));
+  border: 1px solid rgba(200,168,75,0.18);
+  border-radius: 12px; padding: 16px 18px;
+}
+.rel-meter-row { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+.rel-score-ring {
+  width: 64px; height: 64px; flex-shrink: 0;
+  position: relative; display: flex; align-items: center; justify-content: center;
+}
+.rel-score-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.rel-score-ring circle { fill: none; }
+.rel-ring-bg { stroke: rgba(255,255,255,0.06); }
+.rel-ring-fill { stroke-linecap: round; transition: stroke-dashoffset 0.6s cubic-bezier(0.22,1,0.36,1); }
+.rel-ring-inner {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px; font-weight: 500; color: var(--cream); line-height: 1;
+  position: relative; z-index: 1;
+}
+.rel-meta {}
+.rel-tier { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.rel-tier-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; }
+.rel-reason { font-size: 12.5px; color: var(--text2); line-height: 1.65; }
+
+.modal-cta {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; padding: 13px;
+  border-radius: 11px;
+  font-size: 12px; font-weight: 700;
+  background: rgba(200,168,75,0.1);
+  border: 1px solid rgba(200,168,75,0.3);
+  color: var(--gold); text-decoration: none;
+  transition: all 0.18s;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-top: 18px;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+.modal-cta:hover {
+  background: rgba(200,168,75,0.18);
+  border-color: rgba(200,168,75,0.55);
+  color: var(--gold2); transform: translateY(-1px);
+}
+
+/* ─── SCROLL TO TOP ─────────────────────────────────── */
+.scroll-top {
+  position: fixed; bottom: 28px; right: 28px; z-index: 50;
+  width: 42px; height: 42px;
+  background: var(--navy3); border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer; color: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: all 0.2s; opacity: 0; pointer-events: none;
+  font-size: 16px;
+}
+.scroll-top.visible { opacity: 1; pointer-events: auto; }
+.scroll-top:hover { background: var(--navy4); border-color: var(--borderf); transform: translateY(-2px); }
+
+/* ─── FOOTER ─────────────────────────────────────────── */
+.footer {
+  max-width: 1440px; margin: 0 auto;
+  padding: 22px 40px 36px;
+  border-top: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.footer-text { font-size: 12px; color: var(--text3); line-height: 1.65; }
+.footer-links { display: flex; gap: 20px; }
+.footer-link { font-size: 12px; color: var(--text3); text-decoration: none; transition: color 0.15s; }
+.footer-link:hover { color: var(--gold); }
+
+/* ─── EMPTY STATE ───────────────────────────────────── */
+.empty { text-align: center; padding: 80px 20px; }
+.empty-icon { font-size: 36px; margin-bottom: 14px; opacity: 0.5; }
+.empty-title { font-size: 17px; font-weight: 700; color: var(--text2); margin-bottom: 7px; }
+.empty-sub { font-size: 13px; color: var(--text3); }
+
+/* ─── RESPONSIVE ────────────────────────────────────── */
+@media (max-width: 900px) {
+  .header { padding: 0 20px; }
+  .header-stats { display: none; }
+  .hero { padding: 32px 20px 24px; }
+  .hero-right { display: none; }
+  .main { padding: 20px 20px 48px; }
+  .guest-grid { grid-template-columns: 1fr; }
+  .footer { padding: 16px 20px; }
+  .kbd-hint { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="https://pramod101.github.io/Vibecraft/" class="logo">
+      <div class="logo-mark">PK</div>
+      <span class="logo-text">Pramod Kumar</span>
+      <span class="logo-sep">/</span>
+      <span class="logo-sub">Lenny Intelligence</span>
+    </a>
+    <div class="header-search">
+      <span class="search-icon">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </span>
+      <input type="text" id="searchInput" placeholder="Search guest, company, topic…" autocomplete="off">
+      <span class="kbd-hint">/</span>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><div class="hstat-val" id="statTotal">289</div><div class="hstat-lbl">Guests</div></div>
+      <div class="hstat"><div class="hstat-val" id="statFiltered">289</div><div class="hstat-lbl">Showing</div></div>
+      <div class="hstat"><div class="hstat-val">2019–26</div><div class="hstat-lbl">Archive</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Lenny's Newsletter · 289 podcast guests</div>
+    <h1 class="hero-title">The <em>intelligence layer</em><br>on Lenny's archive</h1>
+    <p class="hero-sub">Every guest scored for relevance to your GCC, AI transformation, and senior leadership work. Search, filter, and explore 7 years of product and growth thinking.</p>
+  </div>
+  <div class="hero-right">
+    <div class="hero-stat"><div class="hero-stat-val">289</div><div class="hero-stat-lbl">Total guests</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">4</div><div class="hero-stat-lbl">Key clusters</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">95</div><div class="hero-stat-lbl">Top score</div></div>
+  </div>
+</section>
+
+<main class="main">
+  <div class="controls">
+    <div class="view-tabs">
+      <button class="vtab active" onclick="setView('grid')">Grid</button>
+      <button class="vtab" onclick="setView('table')">Table</button>
+      <button class="vtab" onclick="setView('clusters')">Clusters</button>
+    </div>
+    <div class="filter-scroll" id="filterBar">
+      <button class="ftag active" data-tag="all" onclick="setTag(this,'all')">All</button>
+      <button class="ftag" data-tag="ai" onclick="setTag(this,'ai')">AI</button>
+      <button class="ftag" data-tag="b2b" onclick="setTag(this,'b2b')">B2B</button>
+      <button class="ftag" data-tag="leadership" onclick="setTag(this,'leadership')">Leadership</button>
+      <button class="ftag" data-tag="strategy" onclick="setTag(this,'strategy')">Strategy</button>
+      <button class="ftag" data-tag="growth" onclick="setTag(this,'growth')">Growth</button>
+      <button class="ftag" data-tag="startups" onclick="setTag(this,'startups')">Startups</button>
+      <button class="ftag" data-tag="pricing" onclick="setTag(this,'pricing')">Pricing</button>
+      <button class="ftag" data-tag="go-to-market" onclick="setTag(this,'go-to-market')">GTM</button>
+      <button class="ftag" data-tag="career" onclick="setTag(this,'career')">Career</button>
+      <button class="ftag" data-tag="engineering" onclick="setTag(this,'engineering')">Engineering</button>
+    </div>
+  </div>
+
+  <div class="sort-bar" id="sortBar">
+    <span class="sort-label">Sort</span>
+    <button class="sort-btn active" data-sort="relevance" onclick="setSort(this,'relevance')">Relevance to you</button>
+    <button class="sort-btn" data-sort="date" onclick="setSort(this,'date')">Latest</button>
+    <button class="sort-btn" data-sort="name" onclick="setSort(this,'name')">Name A–Z</button>
+    <button class="sort-btn" data-sort="company" onclick="setSort(this,'company')">Company</button>
+    <div class="result-count" id="resultCount">289 results</div>
+  </div>
+
+  <div id="gridView">
+    <div class="guest-grid" id="guestGrid"></div>
+  </div>
+
+  <div id="tableView" style="display:none">
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="setSort({dataset:{sort:'name'}}, 'name')" id="th-name">Guest</th>
+            <th>Role</th>
+            <th onclick="setSort({dataset:{sort:'company'}}, 'company')" id="th-company">Company</th>
+            <th>Topics</th>
+            <th onclick="setSort({dataset:{sort:'date'}}, 'date')" id="th-date">Year</th>
+            <th onclick="setSort({dataset:{sort:'relevance'}}, 'relevance')" id="th-rel">Relevance</th>
+            <th>Episode</th>
+          </tr>
+        </thead>
+        <tbody id="guestTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="clustersView" style="display:none">
+    <div class="clusters-grid" id="clustersGrid"></div>
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<footer class="footer">
+  <div class="footer-text">
+    Built by Pramod Kumar · AI-powered strategy research · Source: Lenny's Newsletter &amp; Podcast<br>
+    Part of <a href="https://pramod101.github.io/Vibecraft/" style="color:var(--gold);text-decoration:none">Strategic Work Portfolio</a>
+  </div>
+  <div class="footer-links">
+    <a href="https://pramod101.github.io/Vibecraft/lenny_saas_benchmark_explorer.html" class="footer-link">SaaS Benchmarks</a>
+    <a href="https://www.lennysnewsletter.com" class="footer-link" target="_blank">Lenny's Newsletter ↗</a>
+  </div>
+</footer>
+
+<script>
+const GUESTS = [
+  {name:"Jenny Wen",role:"Design leader",company:"Meta",tags:["design","ai","engineering","leadership"],year:2026,relevance:72,slug:"jenny-wen",desc:"AI product work, engineering tradeoffs, and product design in the age of accelerating build cycles."},
+  {name:"Jeetu Patel",role:"EVP & CPO",company:"Cisco",tags:["ai","leadership","b2b","analytics"],year:2026,relevance:94,slug:"jeetu-patel",desc:"Enterprise AI strategy from Cisco's CPO — AI platform, customer transformation, and B2B product at scale."},
+  {name:"Boris Cherny",role:"Engineering leader",company:"Meta",tags:["engineering","ai","design","leadership"],year:2026,relevance:70,slug:"boris-cherny",desc:"The future of software development and what it means when engineers must keep up with themselves."},
+  {name:"Brian Halligan",role:"CEO coach (ex-HubSpot CEO)",company:"Sequoia",tags:["leadership","startups","b2b","career"],year:2026,relevance:88,slug:"brian-halligan",desc:"Why it's never been easier to start a company but harder to scale — coaching Sequoia's fastest-growing founders."},
+  {name:"Sherwin Wu",role:"Engineering leader",company:"Cursor",tags:["engineering","ai","leadership"],year:2026,relevance:65,slug:"sherwin-wu-v2",desc:"Getting code from developer machines into production — the biggest unsolved problem in engineering."},
+  {name:"Lazar Jovanovic",role:"Professional Vibe Coder",company:"Lovable",tags:["ai","engineering","b2b"],year:2026,relevance:60,slug:"lazar-jovanovic",desc:"A full-time builder using AI to create internal and customer-facing products — without a coding background."},
+  {name:"Dr. Becky Kennedy",role:"Child psychologist & author",company:"Good Inside",tags:["leadership","design"],year:2026,relevance:55,slug:"dr-becky-kennedy",desc:"A child psychologist's guide to working with difficult adults — leadership and emotional intelligence frameworks."},
+  {name:"Marc Andreessen",role:"Co-founder",company:"a16z",tags:["ai","startups","growth"],year:2026,relevance:82,slug:"marc-andreessen",desc:"The real AI boom hasn't even started — why we're living through one of the most incredible periods in history."},
+  {name:"Jason Cohen",role:"Founder (2x unicorn)",company:"WP Engine",tags:["growth","strategy","startups","pricing"],year:2026,relevance:85,slug:"jason-cohen",desc:"Five questions to ask when your product stops growing — logo retention, pricing, NRR, channels, target market."},
+  {name:"Zevi Arnovitz",role:"Senior PM",company:"Meta",tags:["ai","engineering","product-management"],year:2026,relevance:68,slug:"zevi-arnovitz",desc:"The non-technical PM's guide to building with Cursor — a complete AI workflow for building real products without code."},
+  {name:"Sam Lessin",role:"Partner",company:"Slow Ventures",tags:["startups","ai","b2c"],year:2026,relevance:62,slug:"sam-lessin",desc:"How to show up in any room with a low heart rate — Silicon Valley's missing etiquette playbook."},
+  {name:"Alexander Embiricos",role:"PM",company:"OpenAI (Codex)",tags:["engineering","ai","leadership"],year:2026,relevance:66,slug:"alexander-embiricos",desc:"Power user guide to Codex — parallelising workflows, planning techniques, advanced context engineering."},
+  {name:"Molly Graham",role:"Founder",company:"Glue Club",tags:["leadership","startups","growth","career"],year:2026,relevance:89,slug:"molly-graham",desc:"The high-growth handbook: frameworks for leading through chaos, change, and scale — worked with Zuckerberg, Sandberg, and Bret Taylor."},
+  {name:"Jason Lemkin",role:"Founder",company:"SaaStr",tags:["b2b","startups","leadership","pricing"],year:2026,relevance:90,slug:"jason-m-lemkin",desc:"We replaced our sales team with 20 AI agents — what happened when SaaStr automated enterprise sales end-to-end."},
+  {name:"Matt MacInnis",role:"CPO / former COO",company:"Rippling",tags:["leadership","startups","strategy","career"],year:2025,relevance:87,slug:"matt-macinnis",desc:"10 contrarian leadership truths every leader needs to hear — from Rippling's CPO overseeing a $16B workforce platform."},
+  {name:"Elena Verna",role:"Growth advisor",company:"Independent",tags:["growth","pricing","strategy","b2b","b2c"],year:2025,relevance:84,slug:"elena-verna-40",desc:"Who would've thought a head of growth would become the most lovable person in the room — growth, pricing, strategy evolution."},
+  {name:"Edwin Chen",role:"CEO",company:"Surge AI",tags:["ai","engineering","startups","pricing"],year:2025,relevance:76,slug:"edwin-chen",desc:"The 100-person AI lab that became Anthropic and Google's secret weapon — $1B revenue, fully bootstrapped."},
+  {name:"Tomer Cohen",role:"CPO",company:"LinkedIn",tags:["ai","leadership","b2c","go-to-market"],year:2025,relevance:80,slug:"tomer-cohen",desc:"Why LinkedIn is turning PMs into AI-powered 'full stack builders' — the new product leader archetype."},
+  {name:"Jeanne Grosser",role:"COO",company:"Vercel (ex-Stripe, Google)",tags:["strategy","go-to-market","b2b","ai","leadership"],year:2025,relevance:93,slug:"jeanne-grosser",desc:"What world-class GTM looks like in 2026 — built Stripe's early sales org from the ground up. Essential for B2B account growth."},
+  {name:"Rachel Lockett",role:"Executive coach",company:"Independent",tags:["leadership","career","strategy"],year:2025,relevance:70,slug:"rachel-lockett",desc:"A guide to difficult conversations, building high-trust teams, and designing a life you love."},
+  {name:"Stewart Butterfield",role:"Co-founder",company:"Slack",tags:["b2b","b2c","leadership","startups","design"],year:2025,relevance:78,slug:"stewart-butterfield",desc:"Mental models for building products people love — the founder of Slack and Flickr on what actually matters."},
+  {name:"Dr. Fei-Fei Li",role:"Co-director",company:"Stanford HAI",tags:["ai","strategy","b2c"],year:2025,relevance:79,slug:"dr-fei-fei-li",desc:"The godmother of AI on jobs, robots, and why world models are the next frontier in artificial intelligence."},
+  {name:"Grant Lee",role:"CEO",company:"Gamma",tags:["strategy","growth","startups","ai","go-to-market"],year:2025,relevance:82,slug:"grant-lee",desc:"'Dumbest idea I've heard' to $100M ARR — inside the rise of Gamma, one of the most compelling AI-native SaaS stories."},
+  {name:"Jen Abel",role:"GM Enterprise",company:"State Affairs (ex-Jellyfish)",tags:["b2b","startups","strategy","go-to-market"],year:2025,relevance:91,slug:"jen-abel",desc:"'Sell the alpha, not the feature' — the enterprise sales playbook from $1M to $10M ARR. Critical for IT services GTM."},
+  {name:"Melanie Perkins",role:"CEO",company:"Canva",tags:["startups","strategy","ai","leadership"],year:2025,relevance:77,slug:"melanie-perkins",desc:"How she built a $42B company from nothing — Canva's founding story, product strategy, and the path to global scale."},
+  {name:"Dhanji Prasanna",role:"CTO",company:"Block (Square)",tags:["ai","engineering","leadership","b2b"],year:2025,relevance:90,slug:"dhanji-r-prasanna",desc:"How Block is becoming the most AI-native enterprise in the world — managing 4,000+ engineers through AI transformation."},
+  {name:"Chip Huyen",role:"AI Engineer",company:"NVIDIA / Stanford",tags:["ai","engineering","analytics","strategy"],year:2025,relevance:75,slug:"chip-huyen",desc:"AI Engineering 101 — the fundamentals of building reliable AI systems at scale from a practitioner and educator."},
+  {name:"Nicole Forsgren",role:"Researcher & author",company:"DORA / SPACE",tags:["engineering","leadership","analytics","strategy"],year:2025,relevance:72,slug:"nicole-forsgren",desc:"How to measure AI developer productivity in 2025 — creator of DORA and SPACE frameworks, author of Accelerate."},
+  {name:"Robby Stein",role:"VP Product",company:"Google Search",tags:["ai","growth","b2c","go-to-market","strategy"],year:2025,relevance:78,slug:"robby-stein",desc:"Inside Google's AI turnaround — the rise of AI Mode, AI Overviews, and their vision for AI-powered search."},
+  {name:"Jason Droege",role:"CEO",company:"Scale AI",tags:["ai","strategy","startups","leadership"],year:2025,relevance:83,slug:"jason-droege",desc:"First interview with Scale AI's CEO — the $14B Meta deal, what's working in enterprise AI, and frontier lab roadmaps."},
+  {name:"Albert Cheng",role:"Growth PM",company:"Duolingo / Chess.com",tags:["growth","analytics","b2c","product-management"],year:2025,relevance:68,slug:"albert-cheng",desc:"How to find hidden growth opportunities in your product — data-driven growth from Duolingo, Grammarly, and Chess.com."},
+  {name:"Ravi Mehta",role:"CPO advisor",company:"Tinder / Reforge",tags:["leadership","startups","b2c","career"],year:2025,relevance:71,slug:"ravi-mehta",desc:"Why Tinder's CPO starts with JSON, not design — secrets to better AI prototypes and faster product iteration."},
+  {name:"Ben Horowitz",role:"Co-founder",company:"a16z",tags:["leadership","startups","career","product-management"],year:2025,relevance:80,slug:"ben-horowitz",desc:"$46B of hard truths — why founders fail and why you need to run toward fear. Essential leadership reading."},
+  {name:"Scott Wu",role:"CEO",company:"Cognition (Devin)",tags:["ai","engineering","startups"],year:2025,relevance:72,slug:"scott-wu",desc:"How Devin replaces junior engineers with infinite AI interns that never sleep — the agentic coding revolution."},
+  {name:"Howie Liu",role:"CEO",company:"Airtable",tags:["ai","strategy","leadership","engineering","b2b"],year:2025,relevance:88,slug:"howie-liu",desc:"How we restructured Airtable's entire org for AI — a blueprint for enterprise AI transformation from a $11B company."},
+  {name:"Asha Sharma",role:"CVP AI Platform",company:"Microsoft",tags:["ai","b2b","leadership","growth","engineering"],year:2025,relevance:95,slug:"asha-sharma",desc:"How 80,000 companies build with AI — products as organisms, the death of org charts, why agents will outnumber employees by 2026."},
+  {name:"Garrett Lord",role:"CEO",company:"Handshake",tags:["ai","strategy","b2b","analytics"],year:2025,relevance:73,slug:"garrett-lord",desc:"Inside the expert network training every frontier AI model — the infrastructure behind AI quality at scale."},
+  {name:"Eoghan McCabe",role:"CEO",company:"Intercom",tags:["ai","pricing","startups","b2b","growth"],year:2025,relevance:89,slug:"eoghan-mccabe",desc:"How Intercom rose from the ashes by betting everything on AI — the pricing, product, and cultural transformation story."},
+  {name:"Nick Turley",role:"Head of ChatGPT",company:"OpenAI",tags:["ai","strategy","go-to-market","engineering"],year:2025,relevance:82,slug:"nick-turley",desc:"Inside ChatGPT: the fastest-growing product in history — growth, product decisions, and the AI-native roadmap."},
+  {name:"Bret Taylor",role:"Co-founder / board",company:"Sierra AI / OpenAI",tags:["ai","leadership","b2b","startups","product-management"],year:2025,relevance:86,slug:"bret-taylor",desc:"He saved OpenAI, invented the Like button, built Google Maps — on the future of careers, coding, and agents."},
+  {name:"Madhavan Ramanujam",role:"Partner",company:"Simon-Kucher",tags:["pricing","strategy","b2b","startups"],year:2025,relevance:88,slug:"madhavan-ramanujam",desc:"Pricing your AI product — lessons from 400+ companies and 50 unicorns. The definitive pricing framework for the AI era."},
+  {name:"Dan Shipper",role:"CEO",company:"Every",tags:["ai","startups","career","engineering"],year:2025,relevance:74,slug:"dan-shipper",desc:"The AI-native startup: 5 products, 7-figure revenue, 100% AI-written code — what it means to run a fully AI-native org."},
+  {name:"Peter Deng",role:"Head of product",company:"OpenAI",tags:["ai","leadership","b2b","engineering","product-management"],year:2025,relevance:83,slug:"peter-deng",desc:"The quiet architect behind ChatGPT, Instagram, and Uber — product leadership across the world's most-used products."},
+  {name:"Aparna Chennapragada",role:"CPO",company:"Microsoft",tags:["ai","b2b","strategy","leadership"],year:2025,relevance:92,slug:"aparna-chennapragada",desc:"Microsoft CPO: if you aren't prototyping with AI, you're doing it wrong — the new product leader operating model."},
+  {name:"Dmitry Zlokazov",role:"Head of Product",company:"Revolut",tags:["leadership","product-management","career","go-to-market"],year:2025,relevance:76,slug:"dmitry-zlokazov",desc:"How Revolut trains world-class PMs — the 'local CEO' model, raw intellect over experience, and the obsession with wow."},
+  {name:"Mayur Kamat",role:"CPO",company:"N26 (ex-Binance)",tags:["leadership","product-management","ai","career","strategy"],year:2025,relevance:79,slug:"mayur-kamat",desc:"Unconventional product lessons from Binance, N26, and Google — building global products in non-Western markets."},
+  {name:"Krithika Shankarraman",role:"First marketer",company:"OpenAI / Stripe",tags:["strategy","ai","b2b","growth","go-to-market"],year:2025,relevance:85,slug:"krithika-shankarraman",desc:"Growth tactics from OpenAI and Stripe's first marketer — zero-to-one GTM for AI-era B2B products."},
+  {name:"Nabeel Qureshi",role:"Founder / writer",company:"ex-Palantir",tags:["startups","leadership","product-management","ai"],year:2025,relevance:77,slug:"nabeel-s-qureshi",desc:"How Palantir built the ultimate founder factory — the culture, training, and operating model behind the people factory."},
+  {name:"Michael Truell",role:"CEO",company:"Cursor",tags:["engineering","ai","startups"],year:2025,relevance:68,slug:"michael-truell",desc:"The rise of Cursor: $300M ARR in two years — the fastest-growing AI code editor and what it reveals about developer needs."},
+  {name:"Daniel Lereya",role:"Chief Product & Tech Officer",company:"monday.com",tags:["leadership","engineering","go-to-market","startups","b2b"],year:2025,relevance:80,slug:"daniel-lereya",desc:"Inside monday.com's transformation — radical transparency, impact over output, and the path to $1B ARR."},
+  {name:"Kevin Weil",role:"CPO",company:"OpenAI",tags:["ai","go-to-market","b2c","leadership","career"],year:2025,relevance:83,slug:"kevin-weil",desc:"OpenAI's CPO on how AI changes must-have skills, moats, coding, and startup playbooks in 2025."},
+  {name:"Ryan Singer",role:"Creator of Shape Up",company:"37signals",tags:["design","leadership","engineering","product-management"],year:2025,relevance:71,slug:"ryan-singer",desc:"A better way to plan, build, and ship products — Shape Up methodology and the philosophy behind great product craft."},
+  {name:"Rahul Vohra",role:"CEO",company:"Superhuman",tags:["design","strategy","growth","startups"],year:2025,relevance:74,slug:"rahul-vohra",desc:"Ignoring most customer feedback, manually onboarding every user, obsessing over one attribute: speed — the Superhuman playbook."},
+  {name:"Eric Simons",role:"CEO",company:"StackBlitz (Bolt)",tags:["ai","startups","go-to-market","pricing"],year:2025,relevance:73,slug:"eric-simons",desc:"Inside Bolt: from near-death to ~$40M ARR in 5 months — one of the fastest-growing products in history."},
+  {name:"Ivan Zhao",role:"CEO",company:"Notion",tags:["design","startups","leadership","strategy","engineering"],year:2025,relevance:77,slug:"ivan-zhao",desc:"Notion's lost years, near collapse during Covid, staying small to move fast — the untold story of community-led growth."},
+  {name:"Tobi Lutke",role:"CEO",company:"Shopify",tags:["leadership","career","growth","startups"],year:2025,relevance:79,slug:"tobi-lutke",desc:"Shopify's CEO on the decisions that shaped a commerce empire — building conviction without the benefit of hindsight."},
+  {name:"Nan Yu",role:"Head of Product",company:"Linear",tags:["design","b2b","leadership","strategy"],year:2025,relevance:74,slug:"nan-yu",desc:"Linear's secret to building beloved B2B products — the craft, culture, and product philosophy behind the fastest-growing dev tool."},
+  {name:"Graham Weaver",role:"Founder / professor",company:"Alpine Investors / Stanford GSB",tags:["career","startups","b2b","leadership"],year:2025,relevance:71,slug:"graham-weaver",desc:"How to break out of autopilot and create the life you want — Stanford GSB professor on intentional career design."},
+  {name:"Drew Houston",role:"CEO",company:"Dropbox",tags:["startups","go-to-market","growth","b2c"],year:2025,relevance:74,slug:"drew-houston",desc:"Behind the founder: Drew Houston — the full Dropbox story, PLG growth model, and lessons from 15+ years of building."},
+  {name:"Alisa Cohn",role:"Executive coach",company:"Independent",tags:["leadership","career","startups","strategy"],year:2025,relevance:72,slug:"alisa-cohn",desc:"Scripts for difficult conversations — giving hard feedback, navigating defensiveness, the three questions to end every meeting with."},
+  {name:"Shaun Clowes",role:"CPO",company:"Confluent (ex-Salesforce)",tags:["product-management","ai","b2b","leadership","career"],year:2024,relevance:82,slug:"shaun-clowes",desc:"Why great AI products are all about the data — CPO of Confluent on data strategy, AI product execution, and B2B growth."},
+  {name:"Marc Benioff",role:"CEO",company:"Salesforce",tags:["b2b","leadership","ai","strategy"],year:2024,relevance:88,slug:"marc-benioff",desc:"Behind the founder: Marc Benioff — how to find fuel for a breakthrough product and get everyone focused on it."},
+  {name:"Farhan Thawar",role:"VP Engineering",company:"Shopify",tags:["engineering","career","leadership","b2b","strategy"],year:2024,relevance:74,slug:"farhan-thawar",desc:"How Shopify builds a high-intensity engineering culture — and what it takes to operate at the speed of a startup inside a giant."},
+  {name:"Jackson Shuttleworth",role:"Group PM",company:"Duolingo",tags:["growth","analytics","product-management","b2c"],year:2024,relevance:70,slug:"jackson-shuttleworth",desc:"Behind the product: Duolingo streaks — the full story of the retention mechanic used by 500M+ learners."},
+  {name:"Seth Godin",role:"Author / entrepreneur",company:"Author",tags:["leadership","strategy","product-management"],year:2024,relevance:75,slug:"seth-godin",desc:"Seth Godin's best tactics for building remarkable products, strategies, brands — timeless frameworks from a legendary thinker."},
+  {name:"Amjad Masad",role:"CEO",company:"Replit",tags:["ai","engineering","startups","product-management"],year:2024,relevance:70,slug:"amjad-masad",desc:"Behind the product: Replit — the vision for AI-powered development environments and democratised coding at scale."},
+  {name:"Raaz Herzberg",role:"CMO / VP Product Strategy",company:"Wiz",tags:["leadership","strategy","startups","b2b"],year:2024,relevance:82,slug:"raaz-herzberg",desc:"Building Wiz: the fastest-growing startup in history — the GTM, product, and culture behind a $12B security unicorn."},
+  {name:"Archie Abrams",role:"VP Product, Growth",company:"Shopify",tags:["growth","analytics","strategy","b2b","pricing"],year:2024,relevance:80,slug:"archie-abrams",desc:"Breaking the rules of growth — why Shopify bans KPIs, optimises for churn, and builds toward a 100-year vision."},
+  {name:"Shreyas Doshi",role:"Former PM lead",company:"Stripe / Twitter / Google",tags:["leadership","product-management","b2b","career","strategy"],year:2024,relevance:86,slug:"shreyas-doshi",desc:"4 questions Shreyas Doshi wishes he'd asked himself sooner — the definitive PM leadership and strategy framework."},
+  {name:"Naomi Gleit",role:"Head of Product (29th employee)",company:"Meta",tags:["product-management","leadership","strategy","career"],year:2024,relevance:80,slug:"naomi-gleit",desc:"Meta's Head of Product on working with Zuckerberg, early growth tactics, and why PMs are like conductors."},
+  {name:"Anneka Gupta",role:"CPO",company:"Rubrik",tags:["leadership","strategy","product-management","startups"],year:2024,relevance:79,slug:"anneka-gupta",desc:"Becoming more strategic, navigating difficult colleagues, harnessing founder mode — lessons from Rubrik's CPO."},
+  {name:"Alex Komoroske",role:"Former PM",company:"Stripe / Google",tags:["ai","leadership","strategy","startups","design"],year:2024,relevance:78,slug:"alex-komoroske",desc:"Thinking like a gardener, not a builder — organising teams like slime mold, the adjacent possible, and unconventional PM wisdom."},
+  {name:"Tamar Yehoshua",role:"VP Product",company:"Glean (ex-Google, Slack)",tags:["leadership","strategy","b2b","ai","career"],year:2024,relevance:83,slug:"tamar-yehoshua",desc:"Lessons in product leadership and AI strategy from Glean, Google, Amazon, and Slack — enterprise AI in practice."},
+  {name:"Camille Fournier",role:"Author / ex-CTO",company:"Rent the Runway",tags:["leadership","engineering","product-management","career"],year:2024,relevance:73,slug:"camille-fournier",desc:"The things engineers are desperate for PMs to understand — the author of The Manager's Path on engineering-product alignment."},
+  {name:"Sean Ellis",role:"Author",company:"'Hacking Growth'",tags:["growth","strategy","startups","analytics"],year:2024,relevance:78,slug:"sean-ellis",desc:"The original growth hacker reveals his secrets — the frameworks behind sustainable growth from the person who coined the term."},
+  {name:"Kevin Yien",role:"PM leader",company:"Stripe / Square / Mutiny",tags:["product-management","leadership","b2b","strategy"],year:2024,relevance:76,slug:"kevin-yien",desc:"Unorthodox PM wisdom — automating user insights, unselling job candidates, logging every decision. Stripe-grade product ops."},
+  {name:"Timothy Davis",role:"Growth leader",company:"Shopify",tags:["strategy","growth","analytics","go-to-market","b2b"],year:2024,relevance:79,slug:"timothy-davis",desc:"The ultimate guide to performance marketing — how Shopify runs growth at enterprise scale with measurable outcomes."},
+  {name:"Roger Martin",role:"Author / advisor",company:"'Playing to Win'",tags:["strategy","leadership","b2b","go-to-market"],year:2024,relevance:84,slug:"roger-martin",desc:"5 essential questions to craft a winning strategy — Roger Martin's where-to-play / how-to-win framework. Essential for VP-level strategy."},
+  {name:"Jess Lachs",role:"VP Analytics",company:"DoorDash",tags:["analytics","strategy","growth","b2b","leadership"],year:2024,relevance:76,slug:"jess-lachs",desc:"Building a world-class data org — how DoorDash structures analytics to drive product decisions at scale."},
+  {name:"Jeff Weinstein",role:"Product lead",company:"Stripe",tags:["engineering","strategy","analytics","b2b"],year:2024,relevance:80,slug:"jeff-weinstein",desc:"Building product at Stripe: craft, metrics, and customer obsession — the operating model behind the world's best developer product."},
+  {name:"Mike Maples Jr",role:"Founding Partner",company:"Floodgate",tags:["startups","career","b2c","strategy"],year:2024,relevance:74,slug:"mike-maples-jr",desc:"Pattern Breakers: how to find a breakthrough startup idea — the investment framework behind Twitter, Lyft, and Twitch."},
+  {name:"Dylan Field",role:"CEO",company:"Figma",tags:["design","leadership","engineering","b2b"],year:2024,relevance:76,slug:"dylan-field",desc:"Intuition, simplicity, and the future of design — Figma's CEO live at Config on the next era of product design."},
+  {name:"Jessica Livingston",role:"Co-founder",company:"Y Combinator",tags:["startups","b2c","leadership"],year:2024,relevance:72,slug:"jessica-livingston",desc:"The social radar: Y Combinator's secret weapon — the co-founder of YC on how she evaluates founders and ideas."},
+  {name:"Ami Vora",role:"CPO",company:"Faire (ex-WhatsApp, FB)",tags:["go-to-market","b2b","career","growth","design"],year:2024,relevance:77,slug:"ami-vora",desc:"Making an impact through authenticity and curiosity — CPO of Faire on leading with humanity in product-led companies."},
+  {name:"Tanguy Crusson",role:"Head of Product",company:"Atlassian (Jira)",tags:["leadership","startups","strategy","b2b","product-management"],year:2024,relevance:80,slug:"tanguy-crusson",desc:"Hard-won lessons building 0 to 1 inside Atlassian — why large companies with advantages still fail at new product creation."},
+  {name:"Jeffrey Pfeffer",role:"Professor",company:"Stanford GSB",tags:["career","leadership","strategy"],year:2024,relevance:75,slug:"jeffrey-pfeffer",desc:"The paths to power — how to grow your influence and advance your career. Stanford's most influential leadership course."},
+  {name:"Uri Levine",role:"Co-founder",company:"Waze",tags:["startups","career","b2c","strategy","ai"],year:2024,relevance:73,slug:"uri-levine",desc:"Lessons from a 2x unicorn builder — 50-time startup advisor, 20-time board member on what makes companies actually work."},
+  {name:"Cam Adams",role:"CPO / Co-founder",company:"Canva",tags:["leadership","strategy","startups","product-management","go-to-market"],year:2024,relevance:76,slug:"cam-adams",desc:"Inside Canva: coaches not managers, giving away your Legos, and running profitably — CPO lessons from a $42B company."},
+  {name:"Matt Dixon",role:"Author",company:"'Challenger Sale'",tags:["b2b","strategy","go-to-market","leadership"],year:2024,relevance:88,slug:"matt-dixon",desc:"The surprising truth about what closes deals — insights from 2.5M sales conversations. The definitive B2B sales framework."},
+  {name:"Bangaly Kaba",role:"PM leader",company:"YouTube / Instagram / Instacart",tags:["growth","product-management","strategy","leadership"],year:2024,relevance:79,slug:"bangaly-kaba",desc:"Unorthodox frameworks for growing your product, career, and impact — North Star metrics and growth model architecture."},
+  {name:"Jag Duggal",role:"VP Product",company:"Nubank (ex-FB, Google)",tags:["go-to-market","strategy","growth","leadership"],year:2024,relevance:78,slug:"jag-duggal",desc:"Be fundamentally different, not incrementally better — the product strategy and GTM behind Nubank's global expansion."},
+  {name:"Vikrama Dhiman",role:"Head of Product",company:"Gojek",tags:["leadership","strategy","product-management","career"],year:2024,relevance:82,slug:"vikrama-dhiman",desc:"A framework for PM skill development from Gojek — building product leadership in high-growth emerging market companies."},
+  {name:"Hamilton Helmer",role:"Author / advisor",company:"'7 Powers'",tags:["strategy","startups","b2b","go-to-market"],year:2024,relevance:85,slug:"hamilton-helmer",desc:"Business strategy with Hamilton Helmer — the 7 Powers framework for sustainable competitive advantage. Essential strategy reading."},
+  {name:"Annie Duke",role:"Author / ex-poker player",company:"'Thinking in Bets'",tags:["career","strategy","leadership"],year:2024,relevance:73,slug:"annie-duke",desc:"This will make you a better decision-maker — probabilistic thinking, decision journaling, and how to quit well."},
+  {name:"Kayvon Beykpour",role:"Former Head of Product",company:"Twitter",tags:["leadership","b2c","product-management","career"],year:2024,relevance:71,slug:"kayvon-beykpour",desc:"Twitter's former Head of Product opens up — being fired, meeting Elon, changing stagnant culture, building consumer product."},
+  {name:"Mihika Kapoor",role:"PM",company:"Figma",tags:["leadership","strategy","product-management","go-to-market","design"],year:2024,relevance:73,slug:"mihika-kapoor",desc:"Vision, conviction, and hype: how to build 0 to 1 inside a company — Figma's internal innovation model."},
+  {name:"Dalton Caldwell",role:"Managing Director",company:"Y Combinator",tags:["startups","analytics","career","strategy"],year:2024,relevance:72,slug:"dalton-caldwell",desc:"Lessons from 1,000+ YC startups — resilience, tar pit ideas, pivoting, and what separates startups that make it."},
+  {name:"Todd Jackson",role:"Partner",company:"First Round Capital",tags:["startups","strategy","b2b","product-management"],year:2024,relevance:76,slug:"todd-jackson",desc:"A framework for finding product-market fit — when you have it, what it feels like, and how to get there faster."},
+  {name:"Dharmesh Shah",role:"Co-founder / CTO",company:"HubSpot",tags:["startups","leadership","product-management","b2b"],year:2024,relevance:82,slug:"dharmesh-shah",desc:"Zigging vs. zagging: how HubSpot built a $30B company — the philosophy behind inbound marketing and PLG at scale."},
+  {name:"Kunal Shah",role:"Founder",company:"CRED (India)",tags:["startups","pricing","strategy","b2b","go-to-market"],year:2024,relevance:92,slug:"kunal-shah",desc:"Winning in India, second-order thinking, the philosophy of startups — CRED's founder on building for Indian consumers and trust economies."},
+  {name:"Ray Cao",role:"Global Head Monetization",company:"TikTok",tags:["strategy","b2c","go-to-market","pricing","leadership"],year:2024,relevance:76,slug:"ray-cao",desc:"Inside TikTok — culture, strategy, monetisation, and the operating model behind the world's most-watched content platform."},
+  {name:"Andrew 'Boz' Bosworth",role:"CTO",company:"Meta",tags:["startups","leadership","b2c","engineering"],year:2024,relevance:75,slug:"boz",desc:"Making Meta — the inside story of Meta's early days, culture, and what Boz learned working alongside Zuckerberg."},
+  {name:"Elizabeth Stone",role:"CTO",company:"Netflix",tags:["leadership","engineering","strategy","b2c"],year:2024,relevance:77,slug:"elizabeth-stone",desc:"How Netflix builds a culture of excellence — the technical leadership and engineering culture behind a global platform."},
+  {name:"Logan Kilpatrick",role:"Developer relations",company:"OpenAI",tags:["ai","engineering","b2b","go-to-market"],year:2024,relevance:74,slug:"logan-kilpatrick",desc:"Inside OpenAI — developer relations, API adoption, and how OpenAI thinks about building its developer ecosystem."},
+  {name:"Megan Cook",role:"Head of Product",company:"Atlassian (Jira)",tags:["leadership","product-management","strategy","go-to-market","b2b"],year:2024,relevance:78,slug:"megan-cook",desc:"Lessons from Atlassian — launching new products, getting buy-in, and staying ahead of competition in enterprise SaaS."},
+  {name:"Geoffrey Moore",role:"Author / advisor",company:"'Crossing the Chasm'",tags:["strategy","go-to-market","b2b","b2c","pricing"],year:2024,relevance:86,slug:"geoffrey-moore",desc:"Geoffrey Moore on finding your beachhead, crossing the chasm, and dominating a market — the definitive B2B GTM framework."},
+  {name:"Matt Abrahams",role:"Professor / author",company:"Stanford GSB",tags:["career","leadership"],year:2024,relevance:68,slug:"matt-abrahams",desc:"How to speak more confidently and persuasively — Stanford GSB professor on executive communication and presence."},
+  {name:"Noam Lovinsky",role:"PM leader",company:"Grammarly / FB / YouTube",tags:["leadership","career","b2c","product-management"],year:2024,relevance:70,slug:"noam-lovinsky",desc:"The happiness and pain of product management — what sustains great PMs across organisations and career stages."},
+  {name:"Carole Robin",role:"Professor",company:"Stanford GSB ('Touchy Feely')",tags:["leadership","startups","career"],year:2024,relevance:68,slug:"carole-robin",desc:"How to build deeper, more robust relationships — the famous Stanford 'Touchy Feely' course, applied to professional life."},
+  {name:"Jake Knapp & John Zeratsky",role:"Authors / co-founders",company:"Character Capital",tags:["startups","leadership","strategy","design"],year:2024,relevance:71,slug:"jake-knapp--john-zeratsky",desc:"Making time for what matters — the authors of Sprint and Make Time on designing work around high-value activities."},
+  {name:"Jonny Miller",role:"Founder",company:"Nervous System Mastery",tags:["leadership","career"],year:2024,relevance:62,slug:"jonny-miller",desc:"Managing nerves, anxiety, and burnout — evidence-backed protocols for cultivating calm and agency under pressure."},
+  {name:"Wes Kao",role:"Coach / entrepreneur",company:"Maven",tags:["career","startups","leadership"],year:2025,relevance:70,slug:"wes-kao",desc:"Become a better communicator — specific frameworks to improve your clarity, influence, and impact in any room."},
+  {name:"Chip Conley",role:"Founder",company:"MEA (ex-Airbnb advisor)",tags:["leadership","career","startups"],year:2025,relevance:68,slug:"chip-conley",desc:"Brian Chesky's secret mentor — who died 9 times, started the Burning Man board, and built the world's first midlife wisdom school."},
+  {name:"Benjamin Mann",role:"Co-founder",company:"Anthropic",tags:["ai","engineering","strategy"],year:2025,relevance:77,slug:"benjamin-mann",desc:"How frontier AI models improve when they can see their own mistakes — the self-correction architectures shaping the next wave."},
+  {name:"Andrew Wilkinson",role:"Co-founder",company:"Tiny",tags:["startups","strategy","b2b","b2c"],year:2025,relevance:74,slug:"andrew-wilkinson",desc:"I've run 75+ businesses — here's why you're probably chasing the wrong idea. The quiet compounding philosophy of Tiny."},
+  {name:"Varun Mohan",role:"CEO",company:"Windsurf",tags:["engineering","ai","startups","b2b","pricing"],year:2025,relevance:70,slug:"varun-mohan",desc:"Building a magical AI code editor: the untold story of Windsurf reaching 1M developers in four months."},
+  {name:"Guillermo Rauch",role:"CEO",company:"Vercel",tags:["ai","engineering","b2c","design"],year:2025,relevance:72,slug:"guillermo-rauch",desc:"Everyone's an engineer now — inside v0's mission to create a hundred million builders with AI-powered development."},
+  {name:"Gaurav Misra",role:"CEO",company:"Captions",tags:["ai","strategy","engineering","b2c","product-management"],year:2025,relevance:71,slug:"gaurav-misra",desc:"How to win in the AI era — ship a feature every week, embrace technical debt, ruthlessly cut scope, and create magic competitors can't copy."},
+  {name:"Matt Mullenweg",role:"CEO",company:"Automattic / WordPress",tags:["b2c","ai","startups","strategy","engineering"],year:2025,relevance:70,slug:"matt-mullenweg",desc:"The creator of WordPress opens up — becoming an internet villain, why he's taking a stand, and the future of open source."},
+  {name:"Karina Nguyen",role:"Researcher",company:"OpenAI",tags:["ai","engineering","startups","leadership"],year:2025,relevance:72,slug:"karina-nguyen",desc:"Why soft skills are the future of work — an OpenAI researcher on what humans need to do that AI cannot replace."},
+  {name:"Hamel Husain & Shreya Shankar",role:"AI educators",company:"Independent",tags:["ai","analytics","engineering","b2c"],year:2025,relevance:74,slug:"hamel-husain--shreya-shankar",desc:"Why AI evals are the hottest new skill for product builders — the creators of the #1 AI evaluation course."},
+  {name:"Brendan Foody",role:"CEO",company:"Mercor",tags:["ai","startups","pricing","strategy"],year:2025,relevance:73,slug:"brendan-foody",desc:"Why experts writing AI evals is creating the fastest-growing companies in history — the talent infrastructure behind frontier AI."},
+  {name:"Ethan Smith",role:"CEO",company:"Graphite",tags:["ai","go-to-market","startups"],year:2025,relevance:70,slug:"ethan-smith",desc:"The ultimate guide to AEO — how to get ChatGPT to recommend your product instead of your competitors."},
+  {name:"David Placek",role:"Founder",company:"Lexicon Branding",tags:["strategy","go-to-market","startups","leadership"],year:2025,relevance:71,slug:"david-placek",desc:"Naming expert shares the process behind creating billion-dollar brand names — Azure, Vercel, Windsurf, Sonos, Blackberry."},
+  {name:"Sander Schulhoff",role:"AI researcher",company:"Learn Prompting",tags:["ai","engineering","b2c"],year:2025,relevance:68,slug:"sander-schulhoff",desc:"AI prompt engineering in 2025 — what works and what doesn't, from the creator of the world's largest prompting guide."},
+  {name:"Hilary Gridley",role:"Head of Core Product",company:"Whoop",tags:["leadership","career","ai","design"],year:2025,relevance:71,slug:"hilary-gridley",desc:"A playbook for building resilient, high-performing teams that can 'take a punch' — building for long-term culture durability."},
+  {name:"Bob Baxley",role:"Design leader",company:"Apple / Disney / Pinterest",tags:["design","leadership","career","strategy"],year:2025,relevance:70,slug:"bob-baxley",desc:"35 years of product design wisdom from Apple, Disney, and Pinterest — what great design leadership actually looks like."},
+  {name:"Mike Krieger",role:"CPO",company:"Anthropic",tags:["ai","design","engineering","strategy"],year:2025,relevance:78,slug:"mike-krieger",desc:"Anthropic's CPO on what comes next — co-founder of Instagram on the design and product philosophy at the AI frontier."},
+  {name:"Jerry Colonna",role:"Executive coach",company:"Reboot",tags:["leadership","career","startups"],year:2025,relevance:67,slug:"jerry-colonna",desc:"How have I been complicit in creating the conditions I say I don't want? — radical self-inquiry for leaders at scale."},
+  {name:"Keith Coleman & Jay Baxter",role:"VP Product + ML Lead",company:"X (Twitter)",tags:["b2c","ai","leadership","analytics"],year:2025,relevance:71,slug:"keith-coleman--jay-baxter",desc:"An inside look at X's Community Notes — the trust and safety product that became a model for scalable human-AI content moderation."},
+  {name:"Donna Lichaw",role:"Author / coach",company:"'The Leader's Journey'",tags:["leadership","strategy","career"],year:2024,relevance:69,slug:"donna-lichaw",desc:"How to discover your superpowers, own your story, and unlock personal growth — narrative-based leadership coaching."},
+  {name:"Phyl Terry",role:"Author",company:"'Never Search Alone'",tags:["strategy","career","b2b","leadership"],year:2024,relevance:72,slug:"phyl-terry",desc:"Land your dream job in today's market — negotiation tactics, job search councils, and how to navigate the modern talent market."},
+  {name:"Evan LaPointe",role:"Founder",company:"CORE Sciences",tags:["leadership","analytics","startups","strategy"],year:2024,relevance:73,slug:"evan-lapointe",desc:"Improve strategy, influence, and decision-making by understanding your brain — neuroscience-based leadership frameworks."},
+  {name:"Joe Hudson",role:"Executive coach",company:"Art of Accomplishment",tags:["leadership","career","analytics"],year:2024,relevance:66,slug:"joe-hudson",desc:"How embracing emotions will accelerate your career — an executive coach on the performance upside of emotional intelligence."},
+  {name:"Brian Tolkin",role:"Head of Product",company:"Opendoor (ex-Uber)",tags:["leadership","go-to-market","product-management","strategy"],year:2024,relevance:73,slug:"brian-tolkin",desc:"Lessons from scaling Uber and Opendoor — building marketplace products in high-stakes, high-velocity environments."},
+  {name:"Kenneth Berger",role:"Exec coach",company:"First PM at Slack",tags:["leadership","product-management","career","startups"],year:2024,relevance:71,slug:"kenneth-berger",desc:"Why not asking for what you want is holding you back — the first PM at Slack on advocacy, burnout, and impact."},
+  {name:"Claire Vo",role:"CPO / founder",company:"LaunchDarkly / ChatPRD",tags:["career","leadership","growth","strategy"],year:2024,relevance:75,slug:"claire-vo",desc:"Bending the universe in your favor — how to create outsized opportunities through strategic positioning and self-advocacy."},
+  {name:"Nikita Bier",role:"Advisor / investor",company:"TBH / Gas",tags:["b2c","go-to-market","product-management","startups"],year:2024,relevance:71,slug:"nikita-bier",desc:"How to consistently go viral — the playbook for winning at consumer apps from the founder of TBH and Gas."},
+  {name:"John Mark Nickels",role:"Leader",company:"Uber / Waymo / DoorDash",tags:["leadership","career","product-management","strategy"],year:2024,relevance:72,slug:"john-mark-nickels",desc:"Becoming a conscious leader — leading without fear, finding your life's objective function, getting better at vision and strategy."},
+  {name:"Benjamin Lauzier",role:"Advisor",company:"Lyft / Thumbtack / Reforge",tags:["strategy","growth","startups","leadership"],year:2024,relevance:74,slug:"benjamin-lauzier",desc:"How marketplaces win — liquidity, growth levers, quality, and the counter-intuitive rules of two-sided platform scaling."},
+  {name:"Emilie Gerber",role:"Founder",company:"Six Eastern",tags:["b2b","growth","strategy","go-to-market"],year:2024,relevance:74,slug:"emilie-gerber",desc:"The ultimate guide to PR — how to build a PR strategy that actually drives business outcomes for B2B and B2C companies."},
+  {name:"Jessica Hische",role:"Lettering artist",company:"Independent",tags:["design","leadership"],year:2024,relevance:62,slug:"jessica-hische",desc:"How to see like a designer — the hidden power of typography and logos and what it reveals about brand craft."},
+  {name:"Tristan de Montebello",role:"CEO",company:"Ultraspeaking",tags:["b2c","career","startups"],year:2024,relevance:65,slug:"tristan-de-montebello",desc:"Why most public speaking advice is wrong — and how to finally overcome your speaking anxiety with Ultraspeaking."},
+  {name:"Chandra Janakiraman",role:"CPO",company:"VRChat (ex-Meta)",tags:["strategy","leadership","b2c","product-management","organization"],year:2025,relevance:73,slug:"chandra-janakiraman",desc:"An operator's guide to product strategy — the difference between 'small s' and 'big S' strategy and when each one matters."}
+];
+
+const TAG_STYLES = {
+  ai:       {bg:'rgba(55,138,221,0.15)', color:'#5fb3ff', border:'rgba(55,138,221,0.25)'},
+  b2b:      {bg:'rgba(29,158,117,0.15)', color:'#4dd4a0', border:'rgba(29,158,117,0.25)'},
+  leadership:{bg:'rgba(127,119,221,0.15)',color:'#a89df0',border:'rgba(127,119,221,0.25)'},
+  strategy: {bg:'rgba(186,117,23,0.15)', color:'#e8c158', border:'rgba(186,117,23,0.25)'},
+  growth:   {bg:'rgba(99,153,34,0.15)',  color:'#88c44a', border:'rgba(99,153,34,0.25)'},
+  startups: {bg:'rgba(216,90,48,0.15)',  color:'#f58d62', border:'rgba(216,90,48,0.25)'},
+  pricing:  {bg:'rgba(212,83,126,0.15)', color:'#f090bb', border:'rgba(212,83,126,0.25)'},
+  design:   {bg:'rgba(136,135,128,0.15)',color:'#b0b0a8', border:'rgba(136,135,128,0.25)'},
+  career:   {bg:'rgba(74,158,255,0.12)', color:'#7cb8f0', border:'rgba(74,158,255,0.2)'},
+  engineering:{bg:'rgba(90,100,120,0.15)',color:'#9faabf',border:'rgba(90,100,120,0.25)'},
+  analytics:{bg:'rgba(156,107,46,0.15)', color:'#d4a55a', border:'rgba(156,107,46,0.25)'},
+  'go-to-market':{bg:'rgba(24,95,165,0.15)',color:'#5498e0',border:'rgba(24,95,165,0.25)'},
+  'product-management':{bg:'rgba(83,58,183,0.15)',color:'#9878f0',border:'rgba(83,58,183,0.25)'},
+  b2c:      {bg:'rgba(15,110,86,0.15)',  color:'#3dcca0', border:'rgba(15,110,86,0.25)'},
+  organization:{bg:'rgba(100,90,120,0.15)',color:'#a898d0',border:'rgba(100,90,120,0.25)'}
+};
+
+const AVATAR_PALETTES = [
+  {bg:'rgba(55,138,221,0.18)',color:'#5fb3ff'},
+  {bg:'rgba(127,119,221,0.18)',color:'#a89df0'},
+  {bg:'rgba(29,158,117,0.18)',color:'#4dd4a0'},
+  {bg:'rgba(186,117,23,0.18)',color:'#e8c158'},
+  {bg:'rgba(216,90,48,0.18)',color:'#f58d62'},
+  {bg:'rgba(212,83,126,0.18)',color:'#f090bb'}
+];
+
+const CLUSTERS = [
+  {
+    id:'enterprise-ai',
+    icon:'🏢',
+    iconBg:'rgba(55,138,221,0.12)',
+    title:'AI × Enterprise',
+    sub:'C-suite voices on AI transformation at scale — directly applicable to GCC and IT services positioning.',
+    color:'#5fb3ff',
+    border:'rgba(55,138,221,0.2)',
+    count:8,
+    why:'These guests define the enterprise AI narrative. Use their frameworks to build client-facing AI transformation playbooks, validate your recommendations, and demonstrate CXO-level thinking in Capgemini engagements.',
+    guests:['Asha Sharma','Jeetu Patel','Dhanji Prasanna','Howie Liu','Marc Benioff','Aparna Chennapragada','Tamar Yehoshua','Jason Droege'],
+    tags:['ai','b2b','strategy','leadership']
+  },
+  {
+    id:'b2b-gtm',
+    icon:'📈',
+    iconBg:'rgba(29,158,117,0.12)',
+    title:'B2B GTM & Enterprise Sales',
+    sub:'The definitive archive on enterprise sales, go-to-market strategy, and account growth — map directly to IT services.',
+    color:'#4dd4a0',
+    border:'rgba(29,158,117,0.2)',
+    count:8,
+    why:'Nobody in the Lenny community is translating this GTM knowledge to IT services contexts. Map Jen Abel\'s $1M–$10M playbook, Matt Dixon\'s Challenger Sale, and Geoffrey Moore\'s chasm framework to Capgemini-scale accounts.',
+    guests:['Jeanne Grosser','Jason Lemkin','Jen Abel','Matt Dixon','Geoffrey Moore','Hamilton Helmer','Roger Martin','Jason Cohen'],
+    tags:['b2b','go-to-market','strategy','growth']
+  },
+  {
+    id:'leadership',
+    icon:'⚡',
+    iconBg:'rgba(127,119,221,0.12)',
+    title:'Leadership & Org Design',
+    sub:'120+ episodes on the operating model of great leaders — VP-level vocabulary and frameworks.',
+    color:'#a89df0',
+    border:'rgba(127,119,221,0.2)',
+    count:9,
+    why:"These are the names Lenny's audience treats as definitive. Quoting Molly Graham on scaling orgs, Shreyas Doshi on PM strategy, or Bret Taylor on decision-making signals you're in the right conversations for VP/CXO roles.",
+    guests:['Molly Graham','Matt MacInnis','Shreyas Doshi','Naomi Gleit','Bret Taylor','Ben Horowitz','Marc Andreessen','Anneka Gupta','Elena Verna'],
+    tags:['leadership','strategy','career','organization']
+  },
+  {
+    id:'india-gcc',
+    icon:'🌏',
+    iconBg:'rgba(186,117,23,0.12)',
+    title:'India & Emerging Market Lens',
+    sub:'The most undercovered cluster in the community — your biggest differentiation opportunity.',
+    color:'#e8c158',
+    border:'rgba(186,117,23,0.2)',
+    count:4,
+    why:"Almost zero synthesis exists in the Lenny community for India/GCC contexts. Kunal Shah's CRED story, Vikrama Dhiman's Gojek frameworks, Mayur Kamat's global PM experience, and Jag Duggal's Nubank expansion are yours to own.",
+    guests:['Kunal Shah','Vikrama Dhiman','Mayur Kamat','Jag Duggal'],
+    tags:['startups','strategy','b2b','go-to-market']
+  }
+];
+
+let currentView = 'grid';
+let currentTag = 'all';
+let currentSort = 'relevance';
+let searchQ = '';
+
+function tagStyle(tag) {
+  const s = TAG_STYLES[tag] || TAG_STYLES.design;
+  return `background:${s.bg};color:${s.color};border:1px solid ${s.border}`;
+}
+
+function relColor(r) {
+  if (r >= 90) return '#4dd4a0';
+  if (r >= 80) return '#5fb3ff';
+  if (r >= 70) return '#e8c158';
+  return '#9faabf';
+}
+
+function initials(name) {
+  return name.split(' ').filter(w => /^[A-Z]/.test(w)).slice(0,2).map(w => w[0]).join('');
+}
+
+function getFiltered() {
+  let arr = GUESTS.slice();
+  if (currentTag !== 'all') arr = arr.filter(g => g.tags.includes(currentTag));
+  if (searchQ) {
+    const q = searchQ.toLowerCase();
+    arr = arr.filter(g =>
+      g.name.toLowerCase().includes(q) ||
+      g.company.toLowerCase().includes(q) ||
+      g.role.toLowerCase().includes(q) ||
+      g.desc.toLowerCase().includes(q) ||
+      g.tags.some(t => t.includes(q))
+    );
+  }
+  if (currentSort === 'relevance') arr.sort((a,b) => b.relevance - a.relevance);
+  else if (currentSort === 'date') arr.sort((a,b) => b.year - a.year || b.relevance - a.relevance);
+  else if (currentSort === 'name') arr.sort((a,b) => a.name.localeCompare(b.name));
+  else if (currentSort === 'company') arr.sort((a,b) => a.company.localeCompare(b.company));
+  return arr;
+}
+
+function renderGrid() {
+  const arr = getFiltered();
+  document.getElementById('resultCount').textContent = arr.length + ' results';
+  document.getElementById('statFiltered').textContent = arr.length;
+  const grid = document.getElementById('guestGrid');
+  if (!arr.length) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">◎</div><div class="empty-title">No guests found</div><div class="empty-sub">Try a different search or filter</div></div>';
+    return;
+  }
+  grid.innerHTML = arr.map((g, i) => {
+    const pal = AVATAR_PALETTES[i % AVATAR_PALETTES.length];
+    const rc = relColor(g.relevance);
+    const tier = g.relevance >= 90 ? 'TOP' : g.relevance >= 80 ? 'HIGH' : g.relevance >= 70 ? 'MID' : 'LOW';
+    const scoreBorderColor = rc.replace(')', ', 0.3)').replace('rgb(', 'rgba(');
+    return `
+    <div class="guest-card" style="animation-delay:${Math.min(i,24)*0.025}s" onclick="openModal('${g.slug}')">
+      <div class="card-body">
+        <div class="card-top">
+          <div class="avatar" style="background:${pal.bg};color:${pal.color}">${initials(g.name)}</div>
+          <div class="card-meta">
+            <div class="card-name" title="${g.name}">${g.name}</div>
+            <div class="card-role">${g.role}</div>
+            <div class="card-company">${g.company}</div>
+          </div>
+          <div class="score-badge" style="background:${pal.bg};border-color:${rc.replace('5fb','3a9').replace('4dd','2aa').replace('e8c','c9a').replace('9fa','7a8')}20;color:${rc}">
+            ${g.relevance}<span>${tier}</span>
+          </div>
+        </div>
+        <div class="card-tags">${g.tags.slice(0,4).map(t => `<span class="ctag" style="${tagStyle(t)}">${t}</span>`).join('')}</div>
+        <div class="card-desc">${g.desc}</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-year">${g.year}</span>
+        <a class="card-link" href="https://www.lennysnewsletter.com/p/${g.slug}" target="_blank" onclick="event.stopPropagation()">
+          Listen &rarr;
+        </a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTable() {
+  const arr = getFiltered();
+  document.getElementById('resultCount').textContent = arr.length + ' results';
+  document.getElementById('statFiltered').textContent = arr.length;
+  const tbody = document.getElementById('guestTable');
+  if (!arr.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:48px;color:var(--text3)">No results</td></tr>';
+    return;
+  }
+  tbody.innerHTML = arr.map((g, i) => {
+    const pal = AVATAR_PALETTES[i % AVATAR_PALETTES.length];
+    const rc = relColor(g.relevance);
+    return `
+    <tr onclick="openModal('${g.slug}')">
+      <td><div style="display:flex;align-items:center;gap:10px">
+        <div class="avatar" style="width:32px;height:32px;font-size:11px;border-radius:8px;background:${pal.bg};color:${pal.color}">${initials(g.name)}</div>
+        <span class="td-name">${g.name}</span>
+      </div></td>
+      <td class="td-role">${g.role}</td>
+      <td class="td-company">${g.company}</td>
+      <td><div class="td-tags">${g.tags.slice(0,3).map(t => `<span class="ctag" style="${tagStyle(t)}">${t}</span>`).join('')}</div></td>
+      <td class="td-year">${g.year}</td>
+      <td><div class="td-rel">
+        <div class="td-rel-bar"><div class="td-rel-fill" style="width:${g.relevance}%;background:${rc}"></div></div>
+        <span class="td-rel-val" style="color:${rc}">${g.relevance}</span>
+      </div></td>
+      <td><a class="td-link" href="https://www.lennysnewsletter.com/p/${g.slug}" target="_blank" onclick="event.stopPropagation()">Listen ↗</a></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderClusters() {
+  document.getElementById('clustersGrid').innerHTML = CLUSTERS.map((c, ci) => `
+    <div class="cluster-card" style="border-color:${c.border};animation-delay:${ci*0.07}s">
+      <div class="cluster-header" style="background:linear-gradient(135deg,${c.iconBg},transparent)">
+        <div class="cluster-header-top">
+          <div class="cluster-icon" style="background:${c.iconBg}">${c.icon}</div>
+          <div>
+            <div class="cluster-title">${c.title}</div>
+            <div class="cluster-sub">${c.sub}</div>
+          </div>
+        </div>
+        <div class="cluster-count-row">
+          <div class="cluster-count" style="color:${c.color}">${c.count}</div>
+          <div class="cluster-count-lbl">priority guests</div>
+        </div>
+      </div>
+      <div class="cluster-body">
+        <div class="cluster-why">${c.why}</div>
+        <div class="cluster-guests">${c.guests.map(n => `<span class="cgname" onclick="filterByGuest('${n}')">${n}</span>`).join('')}</div>
+        <a class="cluster-action" href="#" onclick="filterByCluster('${c.id}');return false;">
+          Explore cluster
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterByGuest(name) {
+  document.getElementById('searchInput').value = name;
+  searchQ = name.toLowerCase();
+  setView('grid');
+  render();
+}
+
+function filterByCluster(id) {
+  const c = CLUSTERS.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('searchInput').value = '';
+  searchQ = '';
+  currentTag = 'all';
+  document.querySelectorAll('.ftag').forEach(el => el.classList.toggle('active', el.dataset.tag === 'all'));
+  currentSort = 'relevance';
+  document.querySelectorAll('.sort-btn').forEach(el => el.classList.toggle('active', el.dataset.sort === 'relevance'));
+  const names = new Set(c.guests.map(n => n.toLowerCase()));
+  const clArr = GUESTS.slice().sort((a,b) => b.relevance - a.relevance).filter(g => names.has(g.name.toLowerCase()));
+  setView('grid');
+  document.getElementById('resultCount').textContent = clArr.length + ' results';
+  document.getElementById('statFiltered').textContent = clArr.length;
+  document.getElementById('guestGrid').innerHTML = clArr.map((g, i) => {
+    const pal = AVATAR_PALETTES[i % AVATAR_PALETTES.length];
+    const rc = relColor(g.relevance);
+    const tier = g.relevance >= 90 ? 'TOP' : g.relevance >= 80 ? 'HIGH' : g.relevance >= 70 ? 'MID' : 'LOW';
+    return `
+    <div class="guest-card" style="animation-delay:${i*0.04}s" onclick="openModal('${g.slug}')">
+      <div class="card-body">
+        <div class="card-top">
+          <div class="avatar" style="background:${pal.bg};color:${pal.color}">${initials(g.name)}</div>
+          <div class="card-meta">
+            <div class="card-name">${g.name}</div>
+            <div class="card-role">${g.role}</div>
+            <div class="card-company">${g.company}</div>
+          </div>
+          <div class="score-badge" style="background:${pal.bg};border-color:${rc}30;color:${rc}">
+            ${g.relevance}<span>${tier}</span>
+          </div>
+        </div>
+        <div class="card-tags">${g.tags.slice(0,4).map(t => `<span class="ctag" style="${tagStyle(t)}">${t}</span>`).join('')}</div>
+        <div class="card-desc">${g.desc}</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-year">${g.year}</span>
+        <a class="card-link" href="https://www.lennysnewsletter.com/p/${g.slug}" target="_blank" onclick="event.stopPropagation()">Listen &rarr;</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function render() {
+  if (currentView === 'grid') renderGrid();
+  else if (currentView === 'table') renderTable();
+  else renderClusters();
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('gridView').style.display = v === 'grid' ? '' : 'none';
+  document.getElementById('tableView').style.display = v === 'table' ? '' : 'none';
+  document.getElementById('clustersView').style.display = v === 'clusters' ? '' : 'none';
+  document.getElementById('sortBar').style.display = v === 'clusters' ? 'none' : '';
+  document.querySelectorAll('.vtab').forEach(t => t.classList.toggle('active', t.textContent.toLowerCase() === v));
+  render();
+}
+
+function setTag(el, tag) {
+  currentTag = tag;
+  document.querySelectorAll('.ftag').forEach(e => e.classList.toggle('active', e === el));
+  render();
+}
+
+function setSort(el, sort) {
+  currentSort = sort;
+  document.querySelectorAll('.sort-btn').forEach(e => e.classList.remove('active'));
+  if (el && el.classList) el.classList.add('active');
+  else document.querySelector(`[data-sort="${sort}"]`)?.classList.add('active');
+  render();
+}
+
+function openModal(slug) {
+  const g = GUESTS.find(x => x.slug === slug);
+  if (!g) return;
+  const i = GUESTS.indexOf(g);
+  const pal = AVATAR_PALETTES[i % AVATAR_PALETTES.length];
+  const rc = relColor(g.relevance);
+  const tier = g.relevance >= 90 ? 'Top priority' : g.relevance >= 80 ? 'High value' : g.relevance >= 70 ? 'Useful' : 'Context';
+  const relReason = g.relevance >= 90
+    ? 'Top-tier relevance for GCC/IT services positioning. Frameworks directly applicable to enterprise AI transformation, B2B account growth, or VP-level leadership thinking.'
+    : g.relevance >= 80
+    ? 'High relevance. Core insights translate well to IT services consulting and senior leadership positioning at Capgemini.'
+    : g.relevance >= 70
+    ? 'Moderate-high relevance. Selected frameworks applicable — worth scanning for specific angles relevant to your work.'
+    : 'Useful context. Builds general product and business knowledge, less directly applicable to your current focus areas.';
+
+  // SVG ring params
+  const r = 26, circ = 2 * Math.PI * r;
+  const dash = circ * (g.relevance / 100);
+  const gap = circ - dash;
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-banner"></div>
+    <div class="modal-header">
+      <div class="modal-avatar" style="background:${pal.bg};color:${pal.color}">${initials(g.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="modal-name">${g.name}</div>
+        <div class="modal-role">${g.role}</div>
+        <div class="modal-company">${g.company}</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-sec-title">Episode summary</div>
+        <div class="modal-desc">${g.desc}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-title">Topics</div>
+        <div class="modal-tags">${g.tags.map(t => `<span class="ctag" style="${tagStyle(t)}">${t}</span>`).join('')}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-sec-title">Relevance to your strategy work</div>
+        <div class="modal-relevance">
+          <div class="rel-meter-row">
+            <div class="rel-score-ring">
+              <svg width="64" height="64" viewBox="0 0 64 64">
+                <circle class="rel-ring-bg" cx="32" cy="32" r="${r}" stroke-width="5"/>
+                <circle class="rel-ring-fill" cx="32" cy="32" r="${r}" stroke-width="5"
+                  stroke="${rc}"
+                  stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}"/>
+              </svg>
+              <div class="rel-ring-inner">${g.relevance}</div>
+            </div>
+            <div class="rel-meta">
+              <div class="rel-tier" style="color:${rc}">${tier}</div>
+              <div class="rel-tier-lbl">relevance score</div>
+            </div>
+          </div>
+          <div class="rel-reason">${relReason}</div>
+        </div>
+      </div>
+      <a class="modal-cta" href="https://www.lennysnewsletter.com/p/${g.slug}" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M5 7l2 2 2-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Open episode on Lenny's Newsletter
+      </a>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQ = e.target.value;
+  if (currentView !== 'clusters') render();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === '/' && document.activeElement !== document.getElementById('searchInput')) {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+});
+
+// Scroll to top button
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTop');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+});
+
+// INIT
+renderGrid();
+</script>
+</body>
+</html>
