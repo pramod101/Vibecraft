@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lenny Learning Hub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #1a1209;
+    --paper: #faf8f4;
+    --warm: #f5f0e8;
+    --accent: #c8421a;
+    --accent2: #2d6a4f;
+    --accent3: #1d4e89;
+    --gold: #d4a843;
+    --muted: #7a6e5f;
+    --border: #e0d8cc;
+    --card: #ffffff;
+    --shadow: rgba(26,18,9,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top:0; z-index:100;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--paper);
+    letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--gold); }
+  .beta-badge {
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-left: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    padding: 56px 32px 48px;
+    text-align: center;
+    border-bottom: 3px solid var(--accent);
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 54px);
+    color: var(--paper);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { color: var(--gold); font-style: italic; }
+  .hero p {
+    color: #a89e8e;
+    font-size: 16px;
+    max-width: 560px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 16px;
+  }
+  .tab {
+    background: transparent;
+    border: 1.5px solid #3a3020;
+    color: #a89e8e;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--gold); color: var(--gold); }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+  .card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  .card p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  /* ── SELECTORS ── */
+  select, input[type="text"], textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: var(--warm);
+    color: var(--ink);
+    margin-top: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  select:focus, input:focus, textarea:focus { border-color: var(--accent); }
+  textarea { min-height: 80px; resize: vertical; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 14px;
+  }
+  .btn:hover { background: #a33416; transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+  }
+  .btn-ghost:hover { background: var(--accent); color: white; }
+
+  /* ── OUTPUT ── */
+  .output-box {
+    background: var(--warm);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre-wrap;
+    min-height: 60px;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+  .output-box.loading {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── CURRICULUM ── */
+  .week-card {
+    border-left: 3px solid var(--accent3);
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    background: var(--warm);
+    border-radius: 0 8px 8px 0;
+  }
+  .week-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent3); margin-bottom: 4px; }
+  .week-title { font-weight: 600; font-size: 15px; }
+  .week-desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* ── FLASHCARDS ── */
+  .flashcard-container { perspective: 1000px; margin-bottom: 24px; }
+  .flashcard {
+    width: 100%;
+    min-height: 160px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    cursor: pointer;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .flashcard-face {
+    position: absolute; inset:0;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 32px;
+    text-align: center;
+  }
+  .flashcard-front {
+    background: var(--accent3);
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .flashcard-back {
+    background: var(--accent2);
+    color: white;
+    font-size: 14px;
+    line-height: 1.7;
+    transform: rotateY(180deg);
+  }
+  .fc-hint { font-size: 11px; opacity:0.7; margin-bottom: 6px; display: block; letter-spacing: 0.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+  .fc-nav { display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 12px; }
+  .fc-counter { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* ── SKILL QUIZ ── */
+  .quiz-question {
+    background: var(--warm);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .quiz-question .q-text { font-weight: 500; font-size: 15px; margin-bottom: 12px; }
+  .quiz-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 6px;
+    transition: background 0.15s;
+  }
+  .quiz-option:hover { background: var(--border); }
+  .quiz-option.correct { background: #d4edda; color: #155724; }
+  .quiz-option.wrong { background: #f8d7da; color: #721c24; }
+  .quiz-option input[type=radio] { accent-color: var(--accent); }
+
+  /* ── READING PATH ── */
+  .path-stage {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .stage-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .stage-content { flex: 1; }
+  .stage-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .stage-items { font-size: 13px; color: var(--muted); line-height: 1.8; }
+
+  /* ── SPINNER ── */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 600px) {
+    .tabs { gap: 6px; }
+    .tab { font-size: 12px; padding: 7px 12px; }
+    .card { padding: 20px; }
+    main { padding: 24px 16px 60px; }
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    margin-bottom: 28px;
+  }
+  .section-header .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+  }
+  .section-header p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  .tag {
+    display: inline-block;
+    background: var(--warm);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 2px 8px;
+    color: var(--muted);
+    margin-right: 4px;
+    margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Lenny <span>Learning Hub</span><span class="beta-badge">Beta</span></div>
+  <div style="font-size:12px; color:#7a6e5f;">Pramod · Premium</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Category 2 — Learning & Education</div>
+  <h1>Your PM Knowledge<br><em>Command Centre</em></h1>
+  <p>7 tools powered by Lenny's archive of 300+ newsletters and 400+ podcast episodes — built for accelerated learning.</p>
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('curriculum')">📅 12-Week Curriculum</button>
+    <button class="tab" onclick="showPanel('interview')">🎤 Interview Prep</button>
+    <button class="tab" onclick="showPanel('explainer')">💡 Concept Explainer</button>
+    <button class="tab" onclick="showPanel('flashcards')">🃏 Flashcards</button>
+    <button class="tab" onclick="showPanel('quiz')">🧠 Skill Assessment</button>
+    <button class="tab" onclick="showPanel('bookclub')">📚 Book Club</button>
+    <button class="tab" onclick="showPanel('readingpath')">🗺️ Reading Path</button>
+  </div>
+</div>
+
+<main>
+
+<!-- ─────────────── 1. CURRICULUM ─────────────── -->
+<div id="curriculum" class="panel active">
+  <div class="section-header">
+    <div class="eyebrow">Tool 1</div>
+    <h2>12-Week Reading Curriculum</h2>
+    <p>Structured learning tracks drawn from Lenny's archive. Pick a topic, get a week-by-week study plan with specific articles to read.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Configure Your Track</div>
+    <h2>Choose Your Focus Area</h2>
+    <p>Lenny's archive covers every major product discipline. Select what you want to master in the next 12 weeks.</p>
+    <select id="curriculumTopic">
+      <option value="">— Select a topic —</option>
+      <option value="growth">Growth & Retention</option>
+      <option value="pricing">Pricing & Monetisation</option>
+      <option value="leadership">Product Leadership</option>
+      <option value="strategy">Product Strategy</option>
+      <option value="data">Data & Metrics</option>
+      <option value="ai">AI Product Management</option>
+      <option value="b2b">B2B & Enterprise</option>
+      <option value="career">PM Career Growth</option>
+    </select>
+    <select id="curriculumLevel" style="margin-top:10px;">
+      <option value="intermediate">Intermediate (know the basics)</option>
+      <option value="beginner">Beginner (brand new)</option>
+      <option value="senior">Senior (want depth)</option>
+    </select>
+    <button class="btn" onclick="generateCurriculum()">
+      <span id="curriculumBtnText">Generate 12-Week Plan</span>
+      <span id="curriculumSpinner" style="display:none;" class="spinner"></span>
+    </button>
+  </div>
+  <div id="curriculumOutput"></div>
+</div>
+
+<!-- ─────────────── 2. INTERVIEW PREP ─────────────── -->
+<div id="interview" class="panel">
+  <div class="section-header">
+    <div class="eyebrow">Tool 2</div>
+    <h2>Interview Prep Simulator</h2>
+    <p>Real questions distilled from 300+ podcast interviews. Practice with AI coaching that references Lenny's frameworks.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Configure Your Session</div>
+    <h2>Pick Your Interview Type</h2>
+    <select id="interviewType">
+      <option value="product_sense">Product Sense</option>
+      <option value="growth">Growth Strategy</option>
+      <option value="leadership">Leadership & Culture</option>
+      <option value="metrics">Metrics & Analytics</option>
+      <option value="strategy">Company / Product Strategy</option>
+      <option value="career">Career Narrative</option>
+    </select>
+    <select id="interviewRole" style="margin-top:10px;">
+      <option value="vp">VP of Product</option>
+      <option value="director">Director of Product</option>
+      <option value="senior_pm">Senior PM</option>
+      <option value="cpo">CPO / Head of Product</option>
+    </select>
+    <button class="btn" onclick="getInterviewQuestion()">
+      <span id="interviewBtnText">Get a Question</span>
+      <span id="interviewSpinner" style="display:none;" class="spinner"></span>
+    </button>
+  </div>
+  <div id="interviewQuestionBox" style="display:none;">
+    <div class="card" style="border-left: 3px solid var(--accent);">
+      <div class="card-label">Interview Question</div>
+      <div id="interviewQuestion" style="font-size:16px; font-weight:500; line-height:1.5;"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Your Answer</div>
+      <textarea id="interviewAnswer" placeholder="Type your answer here... Think about the STAR format: Situation → Task → Action → Result"></textarea>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" onclick="coachAnswer()">
+          <span id="coachBtnText">Get Coaching Feedback</span>
+          <span id="coachSpinner" style="display:none;" class="spinner"></span>
+        </button>
+        <button class="btn btn-ghost" onclick="getInterviewQuestion()">Next Question →</button>
+      </div>
+    </div>
+    <div id="coachOutput" style="display:none;">
+      <div class="card">
+        <div class="card-label">Lenny-Framework Coaching</div>
+        <div id="coachFeedback" class="output-box"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 3. CONCEPT EXPLAINER ─────────────── -->
+<div id="explainer" class="panel">
+  <div class="section-header">
+    <div class="eyebrow">Tool 3</div>
+    <h2>Concept Explainer</h2>
+    <p>Any PM concept explained using Lenny's own frameworks, examples, and language from the archive.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">What do you want to understand?</div>
+    <h2>Ask About Any PM Concept</h2>
+    <p>Type a term, framework, or topic — e.g. "North Star Metric", "PLG motion", "RICE scoring", "Racecar framework".</p>
+    <input type="text" id="conceptQuery" placeholder="e.g. Product-market fit, Activation rate, Jobs-to-be-done..." />
+    <select id="conceptDepth" style="margin-top:10px;">
+      <option value="quick">Quick definition (2 min read)</option>
+      <option value="deep">Deep dive (5 min read)</option>
+      <option value="executive">Executive summary (for a CXO audience)</option>
+    </select>
+    <button class="btn" onclick="explainConcept()">
+      <span id="explainerBtnText">Explain It</span>
+      <span id="explainerSpinner" style="display:none;" class="spinner"></span>
+    </button>
+  </div>
+  <div id="explainerOutput" style="display:none;">
+    <div class="card">
+      <div class="card-label">From Lenny's Archive</div>
+      <div id="explainerResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 4. FLASHCARDS ─────────────── -->
+<div id="flashcards" class="panel">
+  <div class="section-header">
+    <div class="eyebrow">Tool 4</div>
+    <h2>Framework Flashcards</h2>
+    <p>Key mental models from Lenny's archive turned into spaced repetition cards. Click to flip. Navigate with arrows.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Card Deck</div>
+    <h2>Pick a Topic</h2>
+    <select id="flashcardTopic">
+      <option value="">— Select topic —</option>
+      <option value="growth_frameworks">Growth Frameworks</option>
+      <option value="product_strategy">Product Strategy</option>
+      <option value="metrics">Key Metrics</option>
+      <option value="leadership">Leadership Models</option>
+      <option value="pricing">Pricing Concepts</option>
+    </select>
+    <button class="btn" onclick="generateFlashcards()">
+      <span id="flashcardBtnText">Generate Deck</span>
+      <span id="flashcardSpinner" style="display:none;" class="spinner"></span>
+    </button>
+  </div>
+  <div id="flashcardDeck" style="display:none;">
+    <div class="flashcard-container">
+      <div class="flashcard" id="currentCard" onclick="flipCard()">
+        <div class="flashcard-face flashcard-front" id="cardFront">
+          <div>
+            <span class="fc-hint">tap to reveal</span>
+            <div id="cardQuestion"></div>
+          </div>
+        </div>
+        <div class="flashcard-face flashcard-back" id="cardBack">
+          <div>
+            <span class="fc-hint">answer</span>
+            <div id="cardAnswer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="btn btn-ghost" style="margin-top:0; padding:8px 16px;" onclick="prevCard()">← Prev</button>
+      <span class="fc-counter" id="fcCounter">1 / 8</span>
+      <button class="btn" style="margin-top:0; padding:8px 16px;" onclick="nextCard()">Next →</button>
+    </div>
+    <div style="text-align:center; margin-top:8px;">
+      <button class="btn btn-ghost" style="margin-top:8px; font-size:12px;" onclick="generateFlashcards()">🔄 Regenerate Deck</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 5. SKILL QUIZ ─────────────── -->
+<div id="quiz" class="panel">
+  <div class="section-header">
+    <div class="eyebrow">Tool 5</div>
+    <h2>Skill Assessment Quiz</h2>
+    <p>Test your PM knowledge against what Lenny's archive says matters. AI-scored with archive references.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Start Your Assessment</div>
+    <h2>Choose Assessment Area</h2>
+    <select id="quizArea">
+      <option value="growth">Growth & Retention</option>
+      <option value="strategy">Product Strategy</option>
+      <option value="metrics">Metrics & Analytics</option>
+      <option value="leadership">Leadership</option>
+      <option value="pricing">Pricing</option>
+    </select>
+    <select id="quizDepth" style="margin-top:10px;">
+      <option value="5">5 questions (quick)</option>
+      <option value="10">10 questions (standard)</option>
+    </select>
+    <button class="btn" onclick="generateQuiz()">
+      <span id="quizBtnText">Start Assessment</span>
+      <span id="quizSpinner" style="display:none;" class="spinner"></span>
+    </button>
+  </div>
+  <div id="quizContainer" style="display:none;">
+    <div id="quizQuestions"></div>
+    <button class="btn" id="submitQuizBtn" onclick="scoreQuiz()" style="display:none;">Submit & Score</button>
+    <div id="quizResultsBox" style="display:none;">
+      <div class="card" style="border-left:3px solid var(--accent2);">
+        <div class="card-label">Your Results</div>
+        <div id="quizScore" style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:12px;"></div>
+        <div id="quizFeedback" class="output-box"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 6. BOOK CLUB ─────────────── -->
+<div id="bookclub" class="panel">
+  <div class="section-header">
+    <div class="eyebrow">Tool 6</div>
+    <h2>Book Club Companion</h2>
+    <p>Lenny's take on every book recommended across episodes and newsletters. Get key takeaways + how the ideas connect to the archive.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Search the Reading List</div>
+    <h2>Find a Book</h2>
+    <input type="text" id="bookQuery" placeholder="e.g. Inspired, Never Split the Difference, Thinking Fast and Slow..." />
+    <select id="bookContext" style="margin-top:10px;">
+      <option value="summary">Key takeaways</option>
+      <option value="lenny_lens">How Lenny uses these ideas</option>
+      <option value="connections">How it connects to other archive content</option>
+      <option value="apply">How to apply it in an enterprise / B2B context</option>
+    </select>
+    <button class="btn" onclick="bookClub()">
+      <span id="bookBtnText">Get Lenny's Take</span>
+      <span id="bookSpinner" style="display:none;" class="spinner"></span>
+    </button>
+  </div>
+  <div id="bookOutput" style="display:none;">
+    <div class="card">
+      <div class="card-label">Book Club Notes</div>
+      <div id="bookResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 7. READING PATH ─────────────── -->
+<div id="readingpath" class="panel">
+  <div class="section-header">
+    <div class="eyebrow">Tool 7</div>
+    <h2>Reading Path Builder</h2>
+    <p>Describe your role and goals → get a personalised sequence of Lenny content to read in order.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Tell Us About Yourself</div>
+    <h2>Build Your Path</h2>
+    <select id="pathRole">
+      <option value="account_director">Account Director / Client Partner</option>
+      <option value="vp_product">VP of Product (aspiring)</option>
+      <option value="junior_pm">Junior / Mid-level PM</option>
+      <option value="founder">Founder / Entrepreneur</option>
+      <option value="consultant">Strategy Consultant</option>
+      <option value="engineering_manager">Engineering Manager moving to PM</option>
+    </select>
+    <select id="pathGoal" style="margin-top:10px;">
+      <option value="leadership">Move into product leadership</option>
+      <option value="growth">Learn growth deeply</option>
+      <option value="strategy">Get sharper on product strategy</option>
+      <option value="ai_product">Navigate AI product management</option>
+      <option value="b2b">Master B2B / enterprise product</option>
+    </select>
+    <select id="pathTime" style="margin-top:10px;">
+      <option value="1hr_week">1 hour/week (slow burn)</option>
+      <option value="3hr_week">3 hours/week (steady)</option>
+      <option value="7hr_week">7+ hours/week (intensive)</option>
+    </select>
+    <button class="btn" onclick="buildReadingPath()">
+      <span id="pathBtnText">Build My Path</span>
+      <span id="pathSpinner" style="display:none;" class="spinner"></span>
+    </button>
+  </div>
+  <div id="pathOutput" style="display:none;">
+    <div class="card">
+      <div class="card-label">Your Personalised Reading Path</div>
+      <div id="pathResult"></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ── Shared state ──
+let flashcardData = [];
+let currentCardIndex = 0;
+let isFlipped = false;
+
+// ── Tab navigation ──
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.getAttribute('onclick').includes(id)) t.classList.add('active');
+  });
+}
+
+// ── Claude API helper ──
+async function callClaude(prompt, maxTokens = 1000) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: maxTokens,
+      system: `You are a learning assistant for Lenny's Newsletter & Podcast — a premier product management resource. 
+Lenny Rachitsky is a former Airbnb PM who built one of the world's most respected product communities. 
+His archive includes 300+ newsletters and 400+ podcast episodes with top practitioners from companies like Airbnb, Stripe, Figma, Notion, Duolingo, Linear, Ramp, and more.
+
+Key frameworks and concepts from the archive include:
+- The Racecar Growth Framework (growth engine + turbo boosts + lubricant)
+- Activation rate & aha moment methodology
+- Mission → Vision → Strategy → Goals → Roadmap → Task hierarchy
+- PLG (Product-Led Growth) 5-step motion
+- SPADE decision framework
+- North Star Metric methodology
+- Subscription Value Loop
+- Job-to-be-done / opportunity solution trees
+- Pricing: value metric, willingness-to-pay, freemium vs trial
+
+The user is Pramod Kumar — Account Director at Capgemini with 19 years IT services experience, IIT Madras + SP Jain MBA, targeting VP/CXO-level positioning. He is business-oriented, non-technical. 
+Tailor all outputs to be strategic, consultable, and applicable to enterprise / B2B IT services contexts when relevant.
+
+Be specific, cite Lenny's frameworks and episode guests where possible, and always connect knowledge to practical application.`,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  const data = await res.json();
+  return data.content?.filter(b => b.type === "text").map(b => b.text).join("\n") || "Error: no response";
+}
+
+function setLoading(btnTextId, spinnerId, loading) {
+  document.getElementById(btnTextId).style.display = loading ? 'none' : 'inline';
+  document.getElementById(spinnerId).style.display = loading ? 'inline-block' : 'none';
+  const btn = document.getElementById(spinnerId).closest('button');
+  if (btn) btn.disabled = loading;
+}
+
+// ────────────────────────────────────────────────
+// 1. CURRICULUM GENERATOR
+// ────────────────────────────────────────────────
+async function generateCurriculum() {
+  const topic = document.getElementById('curriculumTopic').value;
+  const level = document.getElementById('curriculumLevel').value;
+  if (!topic) { alert('Please select a topic first.'); return; }
+  setLoading('curriculumBtnText', 'curriculumSpinner', true);
+  document.getElementById('curriculumOutput').innerHTML = '';
+  try {
+    const prompt = `Create a 12-week structured reading curriculum for "${topic}" at ${level} level, drawing from Lenny's Newsletter and Podcast archive.
+
+For each week provide:
+1. Week number and theme title
+2. 2-3 specific Lenny articles or podcast episodes to consume (use real titles from the archive)
+3. The key concept to master that week
+4. One practical exercise to apply the learning
+
+Format as JSON array: [{ "week": 1, "theme": "...", "readings": ["...", "..."], "concept": "...", "exercise": "..." }, ...]
+
+Return ONLY the JSON array, nothing else.`;
+
+    const raw = await callClaude(prompt, 1400);
+    let weeks;
+    try {
+      const cleaned = raw.replace(/```json|```/g, '').trim();
+      weeks = JSON.parse(cleaned);
+    } catch(e) {
+      // fallback render
+      document.getElementById('curriculumOutput').innerHTML = `<div class="card"><div class="output-box">${raw}</div></div>`;
+      return;
+    }
+
+    let html = `<div class="section-header" style="margin-top:8px;"><p style="color:var(--accent); font-weight:500;">12-Week ${topic.toUpperCase()} Track · ${level} level</p></div>`;
+    weeks.forEach(w => {
+      const colors = ['var(--accent3)','var(--accent2)','var(--accent)','var(--gold)'];
+      const color = colors[(w.week-1) % 4];
+      html += `<div class="week-card" style="border-left-color:${color}">
+        <div class="week-label" style="color:${color}">WEEK ${w.week}</div>
+        <div class="week-title">${w.theme}</div>
+        <div class="week-desc">
+          <strong>Read/Listen:</strong> ${Array.isArray(w.readings) ? w.readings.join(' · ') : w.readings}<br>
+          <strong>Master:</strong> ${w.concept}<br>
+          <strong>Apply:</strong> ${w.exercise}
+        </div>
+      </div>`;
+    });
+    document.getElementById('curriculumOutput').innerHTML = html;
+  } catch(err) {
+    document.getElementById('curriculumOutput').innerHTML = `<div class="card"><p style="color:red;">Error generating curriculum. Please try again.</p></div>`;
+  } finally {
+    setLoading('curriculumBtnText', 'curriculumSpinner', false);
+  }
+}
+
+// ────────────────────────────────────────────────
+// 2. INTERVIEW PREP
+// ────────────────────────────────────────────────
+let currentInterviewQuestion = '';
+async function getInterviewQuestion() {
+  const type = document.getElementById('interviewType').value;
+  const role = document.getElementById('interviewRole').value;
+  setLoading('interviewBtnText', 'interviewSpinner', true);
+  document.getElementById('coachOutput').style.display = 'none';
+  document.getElementById('interviewAnswer').value = '';
+  try {
+    const prompt = `Generate ONE realistic ${type} interview question that a ${role} candidate would face at a top tech company. 
+Base it on themes commonly discussed in Lenny's podcast (guests from Airbnb, Stripe, Figma, Notion, etc.).
+Make it specific, challenging, and situational. 
+Return ONLY the question text — no preamble, no explanation.`;
+    const q = await callClaude(prompt, 200);
+    currentInterviewQuestion = q;
+    document.getElementById('interviewQuestion').textContent = q;
+    document.getElementById('interviewQuestionBox').style.display = 'block';
+  } catch(e) {
+    alert('Error fetching question.');
+  } finally {
+    setLoading('interviewBtnText', 'interviewSpinner', false);
+  }
+}
+
+async function coachAnswer() {
+  const answer = document.getElementById('interviewAnswer').value.trim();
+  if (!answer) { alert('Please write your answer first.'); return; }
+  setLoading('coachBtnText', 'coachSpinner', true);
+  document.getElementById('coachOutput').style.display = 'none';
+  try {
+    const prompt = `You are coaching a candidate for a VP of Product interview.
+
+QUESTION: ${currentInterviewQuestion}
+
+CANDIDATE'S ANSWER: ${answer}
+
+Evaluate using Lenny's frameworks and examples. Provide:
+1. SCORE: X/10 with one-line rationale
+2. STRENGTHS: What worked well (2-3 points)
+3. GAPS: What's missing (2-3 points)
+4. LENNY FRAMEWORK: Which specific framework from the archive would strengthen this answer (name it, explain it briefly)
+5. IMPROVED ANSWER: A stronger 3-sentence version
+
+Be direct and constructive. Reference specific Lenny podcast guests or articles where relevant.`;
+    const feedback = await callClaude(prompt, 700);
+    document.getElementById('coachFeedback').textContent = feedback;
+    document.getElementById('coachOutput').style.display = 'block';
+  } catch(e) {
+    alert('Error getting feedback.');
+  } finally {
+    setLoading('coachBtnText', 'coachSpinner', false);
+  }
+}
+
+// ────────────────────────────────────────────────
+// 3. CONCEPT EXPLAINER
+// ────────────────────────────────────────────────
+async function explainConcept() {
+  const concept = document.getElementById('conceptQuery').value.trim();
+  const depth = document.getElementById('conceptDepth').value;
+  if (!concept) { alert('Please enter a concept.'); return; }
+  setLoading('explainerBtnText', 'explainerSpinner', true);
+  document.getElementById('explainerOutput').style.display = 'none';
+  try {
+    const depthGuide = {
+      quick: '2-3 paragraphs, plain language, one key example',
+      deep: '5-6 paragraphs with sub-concepts, multiple examples, common mistakes, and how to apply it',
+      executive: '3 bullet points: what it is, why it matters at the C-suite level, one strategic implication — written for a CXO audience'
+    }[depth];
+
+    const prompt = `Explain "${concept}" as it appears in Lenny's Newsletter and Podcast archive.
+Depth: ${depthGuide}
+
+Structure your explanation around:
+1. Lenny's own definition or how he introduced the concept
+2. Which guests discussed it and their key insights (be specific: names and companies)
+3. A concrete example from a real company
+4. How someone at a senior leadership level in enterprise IT services should think about this
+
+Use Lenny's vocabulary and frameworks. Keep it practical and grounded.`;
+    const result = await callClaude(prompt, 900);
+    document.getElementById('explainerResult').textContent = result;
+    document.getElementById('explainerOutput').style.display = 'block';
+  } catch(e) {
+    alert('Error. Please try again.');
+  } finally {
+    setLoading('explainerBtnText', 'explainerSpinner', false);
+  }
+}
+
+// ────────────────────────────────────────────────
+// 4. FLASHCARDS
+// ────────────────────────────────────────────────
+async function generateFlashcards() {
+  const topic = document.getElementById('flashcardTopic').value;
+  if (!topic) { alert('Please select a topic.'); return; }
+  setLoading('flashcardBtnText', 'flashcardSpinner', true);
+  try {
+    const prompt = `Generate 8 flashcards on "${topic}" based on Lenny's Newsletter and Podcast archive.
+Each card: a term/concept on the front, a precise definition + one real example on the back.
+Return ONLY a JSON array: [{"q": "front text", "a": "back text"}, ...]`;
+    const raw = await callClaude(prompt, 1000);
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    flashcardData = JSON.parse(cleaned);
+    currentCardIndex = 0;
+    isFlipped = false;
+    renderCard();
+    document.getElementById('flashcardDeck').style.display = 'block';
+  } catch(e) {
+    alert('Error generating flashcards. Try again.');
+  } finally {
+    setLoading('flashcardBtnText', 'flashcardSpinner', false);
+  }
+}
+
+function renderCard() {
+  const card = flashcardData[currentCardIndex];
+  document.getElementById('cardQuestion').textContent = card.q;
+  document.getElementById('cardAnswer').textContent = card.a;
+  document.getElementById('fcCounter').textContent = `${currentCardIndex + 1} / ${flashcardData.length}`;
+  const el = document.getElementById('currentCard');
+  el.classList.remove('flipped');
+  isFlipped = false;
+}
+function flipCard() {
+  const el = document.getElementById('currentCard');
+  if (isFlipped) { el.classList.remove('flipped'); } else { el.classList.add('flipped'); }
+  isFlipped = !isFlipped;
+}
+function nextCard() {
+  if (currentCardIndex < flashcardData.length - 1) { currentCardIndex++; renderCard(); }
+}
+function prevCard() {
+  if (currentCardIndex > 0) { currentCardIndex--; renderCard(); }
+}
+
+// ────────────────────────────────────────────────
+// 5. SKILL QUIZ
+// ────────────────────────────────────────────────
+let quizData = [];
+async function generateQuiz() {
+  const area = document.getElementById('quizArea').value;
+  const count = parseInt(document.getElementById('quizDepth').value);
+  setLoading('quizBtnText', 'quizSpinner', true);
+  document.getElementById('quizResultsBox').style.display = 'none';
+  document.getElementById('quizQuestions').innerHTML = '';
+  try {
+    const prompt = `Create ${count} multiple-choice quiz questions about "${area}" based on Lenny's Newsletter and Podcast archive.
+Each question should test real understanding — not trivia.
+Return ONLY a JSON array:
+[{
+  "q": "question text",
+  "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
+  "correct": 0,
+  "explanation": "brief explanation referencing Lenny's content"
+}]
+"correct" is the 0-based index of the right answer.`;
+    const raw = await callClaude(prompt, 1400);
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    quizData = JSON.parse(cleaned);
+    renderQuiz();
+  } catch(e) {
+    alert('Error generating quiz. Try again.');
+  } finally {
+    setLoading('quizBtnText', 'quizSpinner', false);
+  }
+}
+
+function renderQuiz() {
+  let html = '';
+  quizData.forEach((q, qi) => {
+    html += `<div class="quiz-question"><div class="q-text">${qi+1}. ${q.q}</div>`;
+    q.options.forEach((opt, oi) => {
+      html += `<label class="quiz-option">
+        <input type="radio" name="q${qi}" value="${oi}"> ${opt}
+      </label>`;
+    });
+    html += `</div>`;
+  });
+  document.getElementById('quizQuestions').innerHTML = html;
+  document.getElementById('submitQuizBtn').style.display = 'inline-flex';
+  document.getElementById('quizContainer').style.display = 'block';
+}
+
+async function scoreQuiz() {
+  let score = 0;
+  let wrongQ = [];
+  quizData.forEach((q, qi) => {
+    const sel = document.querySelector(`input[name="q${qi}"]:checked`);
+    const selected = sel ? parseInt(sel.value) : -1;
+    const labels = document.querySelectorAll(`input[name="q${qi}"]`);
+    labels.forEach((inp, oi) => {
+      const lbl = inp.closest('.quiz-option');
+      if (oi === q.correct) lbl.classList.add('correct');
+      else if (oi === selected && selected !== q.correct) lbl.classList.add('wrong');
+      inp.disabled = true;
+    });
+    if (selected === q.correct) score++;
+    else wrongQ.push(`Q${qi+1}: ${q.q} — ${q.explanation}`);
+  });
+  document.getElementById('submitQuizBtn').style.display = 'none';
+  document.getElementById('quizScore').textContent = `${score} / ${quizData.length} correct`;
+
+  const feedbackPrompt = `A PM candidate scored ${score}/${quizData.length} on a Lenny's Newsletter quiz about ${document.getElementById('quizArea').value}.
+Wrong answers: ${wrongQ.join(' | ')}
+Give: 1) honest 2-line assessment, 2) top 2 weak areas to study, 3) specific Lenny articles to read next. Be direct and concise.`;
+  const fb = await callClaude(feedbackPrompt, 400);
+  document.getElementById('quizFeedback').textContent = fb;
+  document.getElementById('quizResultsBox').style.display = 'block';
+}
+
+// ────────────────────────────────────────────────
+// 6. BOOK CLUB
+// ────────────────────────────────────────────────
+async function bookClub() {
+  const book = document.getElementById('bookQuery').value.trim();
+  const ctx = document.getElementById('bookContext').value;
+  if (!book) { alert('Please enter a book title.'); return; }
+  setLoading('bookBtnText', 'bookSpinner', true);
+  document.getElementById('bookOutput').style.display = 'none';
+  try {
+    const contextGuide = {
+      summary: 'key takeaways and main ideas (3-5 bullet points)',
+      lenny_lens: 'how Lenny or his podcast guests reference and use the ideas from this book in their frameworks',
+      connections: 'how this book connects to specific newsletters and podcast episodes in Lenny\'s archive',
+      apply: 'how to apply the book\'s ideas in an enterprise B2B IT services context — with specific examples for account management and client strategy'
+    }[ctx];
+
+    const prompt = `The book: "${book}"
+Context requested: ${contextGuide}
+
+Provide a structured response covering:
+1. Book overview (2 sentences)
+2. ${contextGuide}
+3. One specific way Lenny or a podcast guest applied this thinking
+4. The single most important insight for a senior enterprise leader
+
+Keep it practical, referenced, and insightful.`;
+    const result = await callClaude(prompt, 700);
+    document.getElementById('bookResult').textContent = result;
+    document.getElementById('bookOutput').style.display = 'block';
+  } catch(e) { alert('Error. Try again.'); }
+  finally { setLoading('bookBtnText', 'bookSpinner', false); }
+}
+
+// ────────────────────────────────────────────────
+// 7. READING PATH BUILDER
+// ────────────────────────────────────────────────
+async function buildReadingPath() {
+  const role = document.getElementById('pathRole').value;
+  const goal = document.getElementById('pathGoal').value;
+  const time = document.getElementById('pathTime').value;
+  setLoading('pathBtnText', 'pathSpinner', true);
+  document.getElementById('pathOutput').style.display = 'none';
+  try {
+    const prompt = `Build a personalised Lenny's Newsletter reading path for:
+Role: ${role}
+Goal: ${goal}  
+Time available: ${time}
+
+Create a 4-stage learning journey (Foundation → Core → Advanced → Mastery) with:
+- 2-3 specific Lenny articles/podcasts per stage
+- What to focus on at each stage
+- Estimated time per stage
+
+Return as JSON array:
+[{
+  "stage": 1,
+  "label": "Foundation",
+  "focus": "what to learn",
+  "readings": ["article 1", "article 2"],
+  "duration": "X weeks at Y hours/week",
+  "color": "#hex"
+}]
+
+Use these colors: stage 1: #1d4e89, stage 2: #c8421a, stage 3: #2d6a4f, stage 4: #d4a843
+Return ONLY the JSON array.`;
+    const raw = await callClaude(prompt, 900);
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    const stages = JSON.parse(cleaned);
+    let html = '';
+    stages.forEach((s, i) => {
+      html += `<div class="path-stage">
+        <div class="stage-dot" style="background:${s.color}; color:white;">${s.stage}</div>
+        <div class="stage-content">
+          <div class="stage-title">${s.label}: ${s.focus}</div>
+          <div class="stage-items">
+            ${Array.isArray(s.readings) ? s.readings.map(r => `• ${r}`).join('<br>') : s.readings}
+          </div>
+          <div style="margin-top:6px;"><span class="tag">${s.duration}</span></div>
+        </div>
+      </div>`;
+      if (i < stages.length - 1) html += `<div style="margin-left:18px; border-left:2px dashed var(--border); height:20px;"></div>`;
+    });
+    document.getElementById('pathResult').innerHTML = html;
+    document.getElementById('pathOutput').style.display = 'block';
+  } catch(e) {
+    // fallback: show raw text
+    try {
+      const raw2 = await callClaude(`Build a reading path for ${role} wanting to ${goal} using Lenny's Newsletter content. 4 stages, specific articles.`, 600);
+      document.getElementById('pathResult').innerHTML = `<div class="output-box">${raw2}</div>`;
+      document.getElementById('pathOutput').style.display = 'block';
+    } catch(e2) { alert('Error. Try again.'); }
+  } finally {
+    setLoading('pathBtnText', 'pathSpinner', false);
+  }
+}
+</script>
+</body>
+</html>
