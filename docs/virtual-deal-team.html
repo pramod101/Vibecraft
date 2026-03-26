@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Deal Team — GCC Edition</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f3;
+    --bg3: #ebebea;
+    --text: #1a1a18;
+    --text2: #6b6b68;
+    --text3: #9a9a97;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --blue-bg: #E6F1FB;
+    --blue: #185FA5;
+    --blue-mid: #378ADD;
+    --green-bg: #E1F5EE;
+    --green: #0F6E56;
+    --amber-bg: #FAEEDA;
+    --amber: #854F0B;
+    --red-bg: #FCEBEB;
+    --red: #A32D2D;
+    --purple-bg: #EEEDFE;
+    --purple: #534AB7;
+    --coral-bg: #FAECE7;
+    --coral: #993C1D;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c;
+      --bg2: #2a2a28;
+      --bg3: #323230;
+      --text: #e8e8e4;
+      --text2: #a0a09c;
+      --text3: #6e6e6a;
+      --border: rgba(255,255,255,0.12);
+      --border2: rgba(255,255,255,0.22);
+      --blue-bg: #0c2d50;
+      --blue: #7ab8f0;
+      --blue-mid: #5a9dd6;
+      --green-bg: #063325;
+      --green: #5ecba6;
+      --amber-bg: #3d2200;
+      --amber: #f5b84a;
+      --red-bg: #3a0f0f;
+      --red: #f08080;
+      --purple-bg: #1e1a4a;
+      --purple: #a89cf0;
+      --coral-bg: #3a1008;
+      --coral: #f0906a;
+    }
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg3);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  .page { max-width: 860px; margin: 0 auto; }
+  .top-bar {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 1.5rem; flex-wrap: wrap; gap: 8px;
+  }
+  .brand { font-size: 11px; font-weight: 500; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  h1 { font-size: 22px; font-weight: 600; color: var(--text); }
+  .subtitle { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .card {
+    background: var(--bg);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--border);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .card-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+  textarea {
+    width: 100%; min-height: 90px;
+    font-family: inherit; font-size: 14px;
+    background: var(--bg2); color: var(--text);
+    border: 0.5px solid var(--border); border-radius: var(--radius);
+    padding: 10px 12px; resize: vertical; line-height: 1.6;
+    outline: none; transition: border-color 0.15s;
+  }
+  textarea:focus { border-color: var(--border2); }
+  .btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  button {
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    padding: 8px 18px; cursor: pointer;
+    border-radius: var(--radius); border: 0.5px solid var(--border2);
+    background: var(--bg); color: var(--text);
+    transition: background 0.15s, opacity 0.15s;
+  }
+  button:hover { background: var(--bg2); }
+  button:active { opacity: 0.8; }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .btn-primary:hover { opacity: 0.85; background: var(--text); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  .progress-track { height: 3px; background: var(--bg3); border-radius: 2px; margin-bottom: 1rem; overflow: hidden; display: none; }
+  .progress-fill { height: 100%; background: var(--blue-mid); border-radius: 2px; transition: width 0.5s ease; }
+  .team-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 8px; margin-bottom: 1rem;
+  }
+  @media (max-width: 600px) { .team-grid { grid-template-columns: repeat(3, 1fr); } }
+  .role-chip {
+    background: var(--bg2); border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    padding: 10px 6px; text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .role-chip.active { background: var(--blue-bg); border-color: var(--blue-mid); }
+  .role-chip.done { background: var(--green-bg); border-color: var(--green); }
+  .chip-icon { font-size: 18px; margin-bottom: 3px; }
+  .chip-name { font-size: 11px; font-weight: 600; color: var(--text); }
+  .chip-sub { font-size: 10px; color: var(--text2); margin-top: 1px; }
+  .chip-status { font-size: 10px; margin-top: 3px; color: var(--text3); }
+  .role-chip.active .chip-status { color: var(--blue); }
+  .role-chip.done .chip-status { color: var(--green); }
+  .tabs { display: flex; gap: 2px; border-bottom: 0.5px solid var(--border); margin-bottom: 1rem; }
+  .tab {
+    font-family: inherit; font-size: 13px; font-weight: 400;
+    padding: 8px 14px; cursor: pointer;
+    background: none; border: none; color: var(--text2);
+    border-bottom: 2px solid transparent; margin-bottom: -0.5px;
+    border-radius: 0; transition: color 0.15s;
+  }
+  .tab:hover { color: var(--text); background: none; }
+  .tab.active { color: var(--text); font-weight: 500; border-bottom-color: var(--blue-mid); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 10px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 0.5px solid var(--border); }
+  td { padding: 9px 10px; border-bottom: 0.5px solid var(--border); vertical-align: top; line-height: 1.55; color: var(--text); }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 100px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .b-risk { background: var(--red-bg); color: var(--red); }
+  .b-assumption { background: var(--amber-bg); color: var(--amber); }
+  .b-option { background: var(--blue-bg); color: var(--blue); }
+  .b-rec { background: var(--green-bg); color: var(--green); }
+  .role-block {
+    border-left: 3px solid var(--border2);
+    padding: 12px 14px; margin-bottom: 10px;
+    background: var(--bg2); border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .role-block.ad { border-left-color: #7F77DD; }
+  .role-block.arch { border-left-color: var(--blue-mid); }
+  .role-block.ai { border-left-color: #1D9E75; }
+  .role-block.pm { border-left-color: #EF9F27; }
+  .role-block.fin { border-left-color: #D85A30; }
+  .role-block-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+  .role-block.ad .role-block-title { color: var(--purple); }
+  .role-block.arch .role-block-title { color: var(--blue); }
+  .role-block.ai .role-block-title { color: var(--green); }
+  .role-block.pm .role-block-title { color: var(--amber); }
+  .role-block.fin .role-block-title { color: var(--coral); }
+  .role-block-body { font-size: 13px; line-height: 1.65; white-space: pre-wrap; color: var(--text); }
+  .action-list { list-style: none; }
+  .action-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+  .action-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--blue-bg); color: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  .action-text { font-size: 13px; color: var(--text); line-height: 1.55; }
+  .action-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .error-box { background: var(--red-bg); color: var(--red); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; margin-top: 8px; }
+  .hidden { display: none; }
+  .spinner {
+    display: inline-block; width: 14px; height: 14px;
+    border: 2px solid var(--border); border-top-color: var(--blue-mid);
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+    margin-right: 6px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .rec-row td { background: var(--green-bg); }
+  footer { text-align: center; font-size: 11px; color: var(--text3); margin-top: 2rem; padding-top: 1rem; border-top: 0.5px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top-bar">
+    <div>
+      <div class="brand">Pramod · Account Director's AI Playbook™</div>
+      <h1>Virtual Deal Team</h1>
+      <p class="subtitle">AI-powered deal structuring across 5 expert roles — GCC Edition</p>
+    </div>
+    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+      <button class="btn-sm" id="exportBtn" onclick="exportText()" style="display:none;">Export ↓</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Deal brief</div>
+    <textarea id="dealBrief" placeholder="Paste your deal brief here. Include: client name/sector, scope, budget, decision maker, competition, timeline, any existing relationship..."></textarea>
+    <div class="btn-row">
+      <button class="btn-primary" id="runBtn" onclick="runDealTeam()">▶ Run Deal Team</button>
+      <button class="btn-sm" onclick="loadExample()">Load example</button>
+      <button class="btn-sm" onclick="clearAll()">Clear</button>
+    </div>
+    <div id="errorBox"></div>
+  </div>
+
+  <div class="progress-track" id="progressTrack">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div class="team-grid">
+    <div class="role-chip" id="chip-0">
+      <div class="chip-icon">🎯</div>
+      <div class="chip-name">Account Dir.</div>
+      <div class="chip-sub">Strategic framing</div>
+      <div class="chip-status" id="cs-0">Standby</div>
+    </div>
+    <div class="role-chip" id="chip-1">
+      <div class="chip-icon">🏗️</div>
+      <div class="chip-name">Architect</div>
+      <div class="chip-sub">Solution scope</div>
+      <div class="chip-status" id="cs-1">Standby</div>
+    </div>
+    <div class="role-chip" id="chip-2">
+      <div class="chip-icon">🤖</div>
+      <div class="chip-name">AI Lead</div>
+      <div class="chip-sub">AI value + risk</div>
+      <div class="chip-status" id="cs-2">Standby</div>
+    </div>
+    <div class="role-chip" id="chip-3">
+      <div class="chip-icon">📋</div>
+      <div class="chip-name">Programme Mgr</div>
+      <div class="chip-sub">Delivery risk</div>
+      <div class="chip-status" id="cs-3">Standby</div>
+    </div>
+    <div class="role-chip" id="chip-4">
+      <div class="chip-icon">💰</div>
+      <div class="chip-name">Finance Lead</div>
+      <div class="chip-sub">Commercial view</div>
+      <div class="chip-status" id="cs-4">Standby</div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="outputCard">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('synthesis')">Deal synthesis</button>
+      <button class="tab" onclick="switchTab('roles')">Role outputs</button>
+      <button class="tab" onclick="switchTab('actions')">Action plan</button>
+    </div>
+
+    <div class="tab-pane active" id="pane-synthesis">
+      <table id="synthTable"></table>
+    </div>
+    <div class="tab-pane" id="pane-roles">
+      <div id="roleBlocks"></div>
+    </div>
+    <div class="tab-pane" id="pane-actions">
+      <ul class="action-list" id="actionList"></ul>
+    </div>
+  </div>
+
+  <footer>Virtual Deal Team · Built on Claude API · Account Director's AI Playbook™ by Pramod</footer>
+</div>
+
+<script>
+const EXAMPLE = `Telecom GCC pilot — Mid-size Indian telco (revenue ~$2B) setting up a 200-seat GCC in Bengaluru. Scope: AI-enabled network operations centre + customer analytics platform. 18-month engagement. Budget: approximately $3M. Decision maker: CTO + Head of Digital. Competition: Wipro already shortlisted. Client has existing Capgemini relationship in billing systems. Timeline pressure: CTO wants GCC live by Q1 next year.`;
+
+const ROLES = [
+  { id: 'ad', label: 'Account Director', cssClass: 'ad',
+    sys: `You are a senior Account Director at a global IT services firm with 20 years of experience in GCC and enterprise deals in India.`,
+    prompt: (brief, prev) => `Analyse this GCC deal brief and provide your strategic framing.\n\nDEAL BRIEF: ${brief}\n\nProvide:\n1. STRATEGIC CONTEXT: 2-3 sentences on why this deal matters and the client's real objective\n2. KEY RISKS (3-4): Biggest account/relationship/competitive risks\n3. KEY ASSUMPTIONS (3): What must be true for this deal to close\n4. WIN THEMES (2-3): What angles will beat the competition\n\nBe specific to the brief. Write as a seasoned account director. Keep each point to 1-2 sentences.`
+  },
+  { id: 'arch', label: 'Solution Architect', cssClass: 'arch',
+    sys: `You are a senior Solution Architect specialising in GCC setups, digital platforms, and enterprise IT transformation in India.`,
+    prompt: (brief, prev) => `Review the deal brief and the Account Director's framing below.\n\nDEAL BRIEF: ${brief}\n\nACCOUNT DIRECTOR INPUT:\n${prev}\n\nAdd your technical/solution perspective:\n1. SCOPE RISKS (3): Technical or scope risks the AD may have missed\n2. SOLUTION ASSUMPTIONS (3): Technical assumptions baked into any proposal\n3. SOLUTION OPTIONS (2-3): Different ways to structure the technical solution\n4. ARCHITECTURE RECOMMENDATION: Which option and why (1-2 sentences)\n\nBe specific. No generic jargon. Focus on what's distinct about a GCC + AI engagement.`
+  },
+  { id: 'ai', label: 'AI Lead', cssClass: 'ai',
+    sys: `You are an AI Practice Lead with deep experience in enterprise AI deployments for GCCs and telecom organisations in India.`,
+    prompt: (brief, prev) => `Review the brief and prior team inputs.\n\nDEAL BRIEF: ${brief}\n\nPRIOR TEAM ANALYSIS:\n${prev}\n\nAdd your AI-specific perspective:\n1. AI VALUE OPPORTUNITIES (3): Specific AI use cases that drive measurable value for this client\n2. AI RISKS (3): Realistic risks in deploying AI in this context\n3. AI MATURITY ASSUMPTION: Where is this client on the AI maturity curve?\n4. AI DIFFERENTIATOR: One compelling AI angle that differentiates our bid\n\nBe specific to telecom/GCC context. Reference real AI patterns.`
+  },
+  { id: 'pm', label: 'Programme Manager', cssClass: 'pm',
+    sys: `You are a Programme Manager with 15+ years delivering GCC setup and digital transformation engagements across India.`,
+    prompt: (brief, prev) => `Review the brief and team inputs so far.\n\nDEAL BRIEF: ${brief}\n\nTEAM ANALYSIS SO FAR:\n${prev}\n\nAdd your delivery perspective:\n1. DELIVERY RISKS (3-4): Biggest programme/execution risks\n2. DELIVERY ASSUMPTIONS (3): What must be true for on-time/on-budget delivery\n3. PHASING RECOMMENDATION: How would you phase this engagement?\n4. GOVERNANCE RED FLAGS: Any stakeholder management concerns?\n\nBe concrete. Think about what typically goes wrong in GCC + AI deals in India.`
+  },
+  { id: 'fin', label: 'Finance Lead', cssClass: 'fin',
+    sys: `You are a Finance Lead / Commercial Director at a global IT services firm, expert in structuring GCC and AI transformation deals in India.`,
+    prompt: (brief, prev) => `Review the deal brief and all team inputs.\n\nDEAL BRIEF: ${brief}\n\nFULL TEAM ANALYSIS:\n${prev}\n\nProvide the commercial view:\n1. COMMERCIAL RISKS (3): Revenue, margin, or contractual risks\n2. COMMERCIAL ASSUMPTIONS (2): Financial assumptions in the deal\n3. DEAL STRUCTURE OPTIONS (2): Different commercial models\n4. COMMERCIAL RECOMMENDATION: Best structure and key terms to protect margin\n\nThen provide a FINAL SYNTHESIS:\nRECOMMENDATION: A clear go/no-go and the single most important condition for winning\nTOP 5 ACTIONS: Numbered list of next 5 actions with owner (AD/Arch/AI/PM/Fin) and timeline (Week 1/2/etc.)\n\nFormat clearly with labels: RECOMMENDATION: and TOP 5 ACTIONS:`
+  }
+];
+
+let outputs = [];
+
+function loadExample() { document.getElementById('dealBrief').value = EXAMPLE; }
+function clearAll() {
+  document.getElementById('dealBrief').value = '';
+  document.getElementById('outputCard').classList.add('hidden');
+  document.getElementById('exportBtn').style.display = 'none';
+  outputs = [];
+  ROLES.forEach((_, i) => setChip(i, ''));
+  document.getElementById('progressTrack').style.display = 'none';
+  document.getElementById('progressFill').style.width = '0%';
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
+  document.getElementById(`pane-${name}`).classList.add('active');
+}
+
+function setChip(i, state) {
+  const chip = document.getElementById(`chip-${i}`);
+  const cs = document.getElementById(`cs-${i}`);
+  chip.className = 'role-chip' + (state ? ' ' + state : '');
+  cs.textContent = state === 'active' ? 'Analysing...' : state === 'done' ? '✓ Done' : 'Standby';
+}
+
+function setProgress(step) {
+  document.getElementById('progressFill').style.width = ((step / ROLES.length) * 100) + '%';
+}
+
+async function callClaude(systemPrompt, userPrompt) {
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }]
+    })
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || 'API error ' + resp.status);
+  }
+  const data = await resp.json();
+  return data.content.map(b => b.text || '').join('');
+}
+
+function parseSynthesis(outs) {
+  const rows = [];
+  const cats = [
+    { key: 'RISK', label: 'Risk', badge: 'b-risk' },
+    { key: 'ASSUMPTION', label: 'Assumption', badge: 'b-assumption' },
+    { key: 'OPTION', label: 'Option', badge: 'b-option' },
+  ];
+  const roleLabels = ['AD', 'Architect', 'AI Lead', 'PM', 'Finance'];
+  outs.forEach((text, i) => {
+    text.split('\n').filter(l => l.trim().length > 15).forEach(line => {
+      const clean = line.replace(/^\d+\.\s*/, '').trim();
+      cats.forEach(cat => {
+        if (line.toUpperCase().includes(cat.key) && clean.length > 25 && rows.length < 20) {
+          rows.push({ type: cat.label, badge: cat.badge, role: roleLabels[i], content: clean });
+        }
+      });
+    });
+  });
+  return rows;
+}
+
+function parseRec(finText) {
+  const m = finText.match(/RECOMMENDATION[:\s]+([^\n]+(?:\n(?![A-Z]{4,})[^\n]+)*)/i);
+  return m ? m[1].trim().replace(/\n/g, ' ') : '';
+}
+
+function parseActions(finText) {
+  const actions = [];
+  const lines = finText.split('\n');
+  let inSection = false;
+  for (const line of lines) {
+    if (/TOP 5 ACTIONS|ACTION PLAN/i.test(line)) { inSection = true; continue; }
+    if (inSection && /^\d+[\.\)]/.test(line.trim())) {
+      const text = line.replace(/^\d+[\.\)]\s*/, '').trim();
+      if (text.length > 10) {
+        const ownerM = text.match(/\((AD|Arch|AI Lead|PM|Fin)\)/i);
+        const weekM = text.match(/Week \d+/i);
+        actions.push({
+          text: text.replace(/\((?:AD|Arch|AI Lead|PM|Fin)\)/i, '').replace(/Week \d+/i, '').trim(),
+          owner: ownerM ? ownerM[1] : '',
+          timeline: weekM ? weekM[0] : ''
+        });
+      }
+    }
+    if (actions.length >= 5) break;
+  }
+  if (!actions.length) {
+    lines.filter(l => /^\d+[\.\)]/.test(l.trim())).slice(0, 5).forEach(l => {
+      actions.push({ text: l.replace(/^\d+[\.\)]\s*/, '').trim(), owner: '', timeline: '' });
+    });
+  }
+  return actions.slice(0, 5);
+}
+
+function renderSynthesis(rows, rec) {
+  let html = `<thead><tr><th>Category</th><th>Role</th><th>Insight</th></tr></thead><tbody>`;
+  if (rec) {
+    html += `<tr class="rec-row"><td><span class="badge b-rec">Recommendation</span></td><td style="font-size:11px;color:var(--text3);white-space:nowrap;">Finance / Team</td><td style="font-weight:500;">${rec}</td></tr>`;
+  }
+  rows.forEach(r => {
+    html += `<tr><td><span class="badge ${r.badge}">${r.type}</span></td><td style="font-size:11px;color:var(--text3);white-space:nowrap;">${r.role}</td><td>${r.content}</td></tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('synthTable').innerHTML = html;
+}
+
+function renderRoles(outs) {
+  document.getElementById('roleBlocks').innerHTML = ROLES.map((r, i) => `
+    <div class="role-block ${r.cssClass}">
+      <div class="role-block-title">${r.label}</div>
+      <div class="role-block-body">${outs[i] || ''}</div>
+    </div>
+  `).join('');
+}
+
+function renderActions(actions) {
+  const list = document.getElementById('actionList');
+  if (!actions.length) {
+    list.innerHTML = '<li style="color:var(--text3);font-size:13px;padding:1rem 0;">No structured actions parsed — see Finance output tab.</li>';
+    return;
+  }
+  list.innerHTML = actions.map((a, i) => `
+    <li class="action-item">
+      <div class="action-num">${i + 1}</div>
+      <div>
+        <div class="action-text">${a.text}</div>
+        <div class="action-meta">${[a.owner ? 'Owner: ' + a.owner : '', a.timeline].filter(Boolean).join(' · ')}</div>
+      </div>
+    </li>
+  `).join('');
+}
+
+async function runDealTeam() {
+  const brief = document.getElementById('dealBrief').value.trim();
+  if (brief.length < 20) {
+    document.getElementById('errorBox').innerHTML = '<div class="error-box">Please enter a deal brief before running.</div>';
+    return;
+  }
+  document.getElementById('errorBox').innerHTML = '';
+  document.getElementById('runBtn').disabled = true;
+  document.getElementById('runBtn').innerHTML = '<span class="spinner"></span>Running...';
+  document.getElementById('progressTrack').style.display = 'block';
+  document.getElementById('outputCard').classList.add('hidden');
+  document.getElementById('exportBtn').style.display = 'none';
+  outputs = [];
+
+  try {
+    for (let i = 0; i < ROLES.length; i++) {
+      setChip(i, 'active');
+      setProgress(i);
+      const prevCtx = outputs.map((o, j) => `${ROLES[j].label.toUpperCase()}:\n${o}`).join('\n\n---\n\n');
+      const result = await callClaude(ROLES[i].sys, ROLES[i].prompt(brief, prevCtx));
+      outputs.push(result);
+      setChip(i, 'done');
+      setProgress(i + 1);
+    }
+
+    const rec = parseRec(outputs[4]);
+    const rows = parseSynthesis(outputs);
+    const actions = parseActions(outputs[4]);
+
+    renderSynthesis(rows, rec);
+    renderRoles(outputs);
+    renderActions(actions);
+
+    document.getElementById('outputCard').classList.remove('hidden');
+    document.getElementById('exportBtn').style.display = 'inline-block';
+    document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    document.getElementById('errorBox').innerHTML = `<div class="error-box">Error: ${err.message}. Check your API key or try again.</div>`;
+    ROLES.forEach((_, i) => { if (document.getElementById(`chip-${i}`).classList.contains('active')) setChip(i, ''); });
+  }
+
+  document.getElementById('runBtn').disabled = false;
+  document.getElementById('runBtn').innerHTML = '▶ Run Deal Team';
+}
+
+function exportText() {
+  const brief = document.getElementById('dealBrief').value.trim();
+  let txt = `VIRTUAL DEAL TEAM — GCC DEAL ANALYSIS\n${'='.repeat(55)}\nDeal brief: ${brief}\nGenerated: ${new Date().toLocaleString()}\n\n`;
+  ROLES.forEach((r, i) => {
+    txt += `${'='.repeat(55)}\n${r.label.toUpperCase()}\n${'='.repeat(55)}\n${outputs[i] || ''}\n\n`;
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([txt], { type: 'text/plain' }));
+  a.download = 'virtual-deal-team-output.txt';
+  a.click();
+}
+</script>
+</body>
+</html>
